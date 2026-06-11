@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>WaiterOS v4.0 — Дача (Зал)</title>
+<title>FetBook v4.0 — Дача (Зал)</title>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
 :root {
@@ -32,7 +34,6 @@ body.theme-dark {
 }
 body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg-primary); color:var(--text-primary); line-height:1.5; min-height:100vh; overflow-x:hidden; }
 
-/* LOGIN */
 .login-screen { position:fixed; top:0; left:0; right:0; bottom:0; background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1000; padding:20px; }
 .login-screen.hidden { display:none; }
 .login-logo { font-size:42px; font-weight:700; color:var(--accent-primary); letter-spacing:6px; text-transform:uppercase; margin-bottom:8px; }
@@ -53,29 +54,22 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .login-hint { font-size:11px; color:var(--text-muted); text-align:center; margin-top:16px; line-height:1.6; }
 .role-icon { font-size:18px; display:block; margin-bottom:2px; }
 
-/* USER BADGE */
-.user-badge { background:var(--bg-card); border:1.5px solid var(--border); border-radius:20px; padding:5px 10px; font-size:11px; color:var(--accent-primary); font-weight:600; display:flex; align-items:center; gap:5px; cursor:pointer; transition:all 0.3s; white-space:nowrap; }
+.user-badge { position:fixed; top:12px; right:12px; z-index:200; background:var(--bg-card); border:1.5px solid var(--border); border-radius:20px; padding:6px 14px; font-size:12px; color:var(--accent-primary); font-weight:600; display:flex; align-items:center; gap:6px; cursor:pointer; transition:all 0.3s; }
 .user-badge:hover { border-color:var(--accent-primary); background:var(--bg-card-hover); }
-.header-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
-.sync-badge { background:var(--bg-card); border:1.5px solid var(--border); border-radius:20px; padding:5px 10px; white-space:nowrap; min-width:80px; text-align:center; }
-.save-btn { padding:5px 10px; background:var(--accent-primary); border:none; border-radius:20px; color:#1a1a2e; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.3s; }
-.save-btn:hover { transform:scale(1.1); box-shadow:0 2px 8px rgba(232,160,144,0.4); }
 .role-dot { width:8px; height:8px; border-radius:50%; background:var(--status-green); }
 .role-dot.admin { background:var(--status-yellow); }
 .role-dot.chef { background:var(--status-red); }
 
-/* HEADER */
-.header { background:linear-gradient(135deg,var(--bg-secondary) 0%,#2a1810 100%); padding:14px 12px; border-bottom:2px solid var(--accent-primary); position:sticky; top:0; z-index:100; }
-.header-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; gap:8px; }
-.theme-toggle { display:flex; align-items:center; gap:4px; padding:5px 10px; background:var(--bg-card); border:1.5px solid var(--border); border-radius:20px; color:var(--accent-primary); font-size:12px; font-weight:600; cursor:pointer; transition:all 0.3s; user-select:none; white-space:nowrap; }
+.header { background:linear-gradient(135deg,var(--bg-secondary) 0%,#2a1810 100%); padding:20px 16px; border-bottom:2px solid var(--accent-primary); position:sticky; top:0; z-index:100; }
+.header-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+.theme-toggle { display:flex; align-items:center; gap:6px; padding:8px 14px; background:var(--bg-card); border:1.5px solid var(--border); border-radius:20px; color:var(--accent-primary); font-size:13px; font-weight:600; cursor:pointer; transition:all 0.3s; user-select:none; }
 .theme-toggle:hover { background:var(--bg-card-hover); border-color:var(--accent-primary); transform:scale(1.05); }
 .theme-icon { font-size:16px; }
-.logo { font-size:22px; font-weight:700; color:var(--accent-primary); letter-spacing:3px; text-transform:uppercase; margin-bottom:0; line-height:1; }
+.logo { font-size:28px; font-weight:700; color:var(--accent-primary); letter-spacing:3px; text-transform:uppercase; margin-bottom:4px; }
 .subtitle { font-size:12px; color:var(--text-secondary); letter-spacing:2px; text-transform:uppercase; }
 .version { font-size:10px; color:var(--text-muted); margin-top:4px; }
 
-/* SEARCH & FILTERS */
-.search-container { padding:12px 16px; background:var(--bg-primary); position:sticky; top:70px; z-index:99; border-bottom:1px solid var(--border); }
+.search-container { padding:16px; background:var(--bg-primary); position:sticky; top:85px; z-index:99; border-bottom:1px solid var(--border); }
 .search-box { width:100%; padding:14px 18px; background:var(--bg-card); border:2px solid var(--border); border-radius:12px; color:var(--text-primary); font-size:16px; outline:none; }
 .search-box:focus { border-color:var(--accent-primary); }
 .filters { padding:12px 16px; display:flex; gap:8px; overflow-x:auto; background:var(--bg-primary); border-bottom:1px solid var(--border); scrollbar-width:none; }
@@ -87,12 +81,10 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .allergen-btn { padding:6px 12px; background:rgba(232,160,144,0.08); border:1.5px solid rgba(232,160,144,0.2); border-radius:16px; color:var(--accent-soft); font-size:12px; white-space:nowrap; cursor:pointer; transition:all 0.3s; }
 .allergen-btn.active { background:var(--accent-primary); color:#0f1c1b; border-color:var(--accent-primary); font-weight:600; }
 
-/* CONTENT */
 .content { padding:16px; padding-bottom:100px; min-height:calc(100vh - 200px); }
 .category-title { font-size:14px; color:var(--accent-primary); text-transform:uppercase; letter-spacing:2px; margin:24px 0 12px 0; padding-left:8px; border-left:3px solid var(--accent-primary); font-weight:600; }
 .category-title.hidden { display:none; }
 
-/* DISH CARD */
 .dish-card { background:var(--bg-card); border-radius:16px; margin-bottom:12px; overflow:hidden; border:1.5px solid var(--border); transition:all 0.3s; cursor:pointer; user-select:none; box-shadow:0 2px 8px var(--shadow); }
 .dish-card:hover { background:var(--bg-card-hover); border-color:var(--border-strong); box-shadow:0 4px 16px var(--shadow-hover); transform:translateY(-1px); }
 .dish-card.hidden { display:none; }
@@ -122,7 +114,6 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .tk-link { display:inline-block; margin-top:10px; padding:8px 14px; background:var(--bg-secondary); border:1.5px solid var(--border-strong); border-radius:8px; color:var(--accent-primary); font-size:12px; font-weight:600; text-decoration:none; cursor:pointer; transition:all 0.3s; }
 .tk-link:hover { border-color:var(--accent-primary); }
 
-/* ADMIN CONTROLS */
 .admin-controls { display:none; margin-top:12px; padding-top:12px; border-top:1px dashed var(--border); }
 .admin-controls.visible { display:flex; gap:8px; flex-wrap:wrap; }
 .admin-btn { padding:6px 12px; background:var(--bg-secondary); border:1.5px solid var(--border); border-radius:8px; color:var(--text-secondary); font-size:12px; font-weight:500; cursor:pointer; transition:all 0.3s; }
@@ -130,7 +121,6 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .admin-btn.delete { border-color:rgba(232,160,160,0.3); color:var(--status-red); }
 .admin-btn.delete:hover { background:rgba(232,160,160,0.1); border-color:var(--status-red); }
 
-/* MODAL */
 .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); z-index:500; display:none; align-items:center; justify-content:center; padding:20px; }
 .modal-overlay.active { display:flex; }
 .modal { background:var(--bg-card); border-radius:20px; padding:24px; width:100%; max-width:400px; border:1.5px solid var(--border); box-shadow:0 8px 32px var(--shadow); max-height:90vh; overflow-y:auto; }
@@ -146,7 +136,6 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .modal-btn.secondary { background:var(--bg-secondary); color:var(--text-secondary); border:1.5px solid var(--border); }
 .modal-btn:hover { transform:translateY(-1px); }
 
-/* QA */
 .qa-section { display:none; }
 .qa-section.active { display:block; }
 .qa-card { background:var(--bg-card); border-radius:16px; margin-bottom:12px; overflow:hidden; border:1.5px solid var(--border); cursor:pointer; transition:all 0.3s; }
@@ -163,7 +152,6 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .qa-dish-chip:hover { background:rgba(45,212,191,0.15); border-color:var(--accent-primary); transform:translateY(-1px); }
 .tip-box { background:var(--bg-secondary); border-left:3px solid var(--status-yellow); padding:10px 12px; margin:10px 0; border-radius:0 8px 8px 0; font-size:13px; }
 
-/* KNOWLEDGE */
 .knowledge-section { display:none; }
 .knowledge-section.active { display:block; }
 .knowledge-card { background:var(--bg-card); border-radius:16px; margin-bottom:12px; overflow:hidden; border:1.5px solid var(--border); cursor:pointer; transition:all 0.3s; }
@@ -181,7 +169,6 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .knowledge-content .highlight { background:rgba(232,168,56,0.1); padding:2px 6px; border-radius:4px; color:var(--accent-soft); }
 .pairing-box { background:var(--bg-secondary); border-left:3px solid var(--status-purple); padding:10px 12px; margin:10px 0; border-radius:0 8px 8px 0; font-size:13px; }
 
-/* Category colors */
 .dish-card[data-category="Салаты"] { border-left:4px solid #c4a88a; }
 .dish-card[data-category="Супы"] { border-left:4px solid #e8a838; }
 .dish-card[data-category="Закуски"] { border-left:4px solid #d4a0a0; }
@@ -193,7 +180,6 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .dish-card[data-category="Детское"] { border-left:4px solid #e8c0a0; }
 .dish-card[data-category="Бизнес-ланч"] { border-left:4px solid #b8956a; }
 
-/* BOTTOM NAV */
 .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:linear-gradient(to top,var(--bg-primary),rgba(42,24,16,0.95)); padding:12px 16px 24px 16px; border-top:1px solid var(--border); display:flex; justify-content:space-around; backdrop-filter:blur(10px); z-index:100; }
 .nav-btn { display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--text-muted); font-size:11px; background:none; border:none; cursor:pointer; transition:all 0.3s; user-select:none; }
 .nav-btn.active { color:var(--accent-primary); }
@@ -204,15 +190,12 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 ::-webkit-scrollbar-thumb { background:var(--border-strong); border-radius:3px; }
 @media (max-width:768px) { ::-webkit-scrollbar { display:none; } .dish-card { touch-action:manipulation; } }
 </style>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<base target="_blank">
 </head>
 <body>
-<!-- LOGIN SCREEN -->
+
 <div class="login-screen" id="loginScreen">
   <div class="login-logo">ДАЧА</div>
-  <div class="login-subtitle">WaiterOS v4.0</div>
+  <div class="login-subtitle">FetBook v4.0</div>
   <div class="login-card">
     <div class="login-title">Выберите роль</div>
     <div class="role-selector">
@@ -222,8 +205,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
     </div>
     <div id="loginFields">
       <div class="login-field" id="passwordField">
-        <label>Пароль</label>
-        <input type="password" class="login-input" id="passwordInput" placeholder="Введите пароль...">
+        <label>PIN-код</label>
+        <input type="password" class="login-input" id="passwordInput" placeholder="Введите PIN..." inputmode="numeric" maxlength="4">
       </div>
       <div class="login-field" id="nameField" style="display:none;">
         <label>Ваше имя</label>
@@ -233,29 +216,25 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
     <button class="login-btn" onclick="doLogin()">Войти</button>
     <div class="login-error" id="loginError"></div>
   </div>
-  <div class="login-hint">Шеф: пароль chef-dacha-2026<br>Админ: пароль admin-dacha-2026<br>Официант: вход по имени, без пароля</div>
+  <div class="login-hint">Шеф: PIN 1990<br>Админ: PIN 1880<br>Официант: вход по имени, без PIN</div>
 </div>
 
-<!-- MAIN APP -->
 <div id="mainApp" style="display:none;">
+  <div class="user-badge" id="userBadge" onclick="logout()">
+    <span class="role-dot" id="roleDot"></span>
+    <span id="userName">Гость</span>
+    <span style="font-size:10px;opacity:0.6;">↻ Выход</span>
+  </div>
+
   <header class="header">
     <div class="header-top">
       <div class="logo">ДАЧА</div>
-      <div class="header-actions">
-        <span id="syncStatus" class="sync-badge" style="font-size:11px;font-weight:600;">⚪ Загрузка...</span>
-        <button class="theme-toggle" id="themeToggle" type="button" onclick="nextTheme()">
-          <span class="theme-icon" id="themeIcon">🌅</span>
-          <span class="theme-label" id="themeLabel">Закат</span>
-        </button>
-        <button class="save-btn" id="saveBtn" onclick="saveMenuToFirebase()" style="display:none;">💾</button>
-        <div class="user-badge" id="userBadge" onclick="logout()">
-          <span class="role-dot" id="roleDot"></span>
-          <span id="userName">Гость</span>
-          <span style="font-size:10px;opacity:0.6;">↻</span>
-        </div>
-      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" onclick="nextTheme()">
+        <span class="theme-icon" id="themeIcon">🌅</span>
+        <span class="theme-label" id="themeLabel">Закат</span>
+      </button>
     </div>
-    <div class="subtitle">WaiterOS v4.0 — Операционка для официанта</div>
+    <div class="subtitle">FetBook v4.0 — Меню для гостей</div>
     <div class="version" id="versionText">Загрузка...</div>
   </header>
 
@@ -293,7 +272,6 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 
   <main class="content qa-section" id="qaContent">
     <div class="category-title" style="margin-top:0;">❓ Вопросы гостей</div>
-
     <div class="qa-card" onclick="toggleQA(this)">
       <div class="qa-header"><div class="qa-question">Что быстро? (до 10 мин)</div><div class="qa-toggle">▼</div></div>
       <div class="qa-answer">
@@ -301,223 +279,21 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
         <div class="qa-dishes">
           <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат дача новый')">🥗 Салат Дача Новый</span>
           <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат здоровье')">🥗 Салат Здоровье</span>
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат цезарь')">🥗 Салат Цезарь</span>
         </div>
         <div class="tip-box">💡 <strong>Совет:</strong> Если гость спешит — предложи салат + закуску.</div>
-      </div>
-    </div>
-
-    <div class="qa-card" onclick="toggleQA(this)">
-      <div class="qa-header"><div class="qa-question">Что лёгкое? (не тяжело в желудок)</div><div class="qa-toggle">▼</div></div>
-      <div class="qa-answer">
-        <p><strong>Салаты, супы, рыба на пару</strong> — легко усваиваются.</p>
-        <div class="qa-dishes">
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат здоровье')">🥗 Салат Здоровье</span>
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('борщ')">🥣 Борщ</span>
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат дача новый')">🥗 Салат Дача</span>
-        </div>
-        <div class="tip-box">💡 <strong>Совет:</strong> После тяжёлого дня гости часто хотят что-то лёгкое.</div>
-      </div>
-    </div>
-
-    <div class="qa-card" onclick="toggleQA(this)">
-      <div class="qa-header"><div class="qa-question">Какое вино к блюду?</div><div class="qa-toggle">▼</div></div>
-      <div class="qa-answer">
-        <p><strong>Красное мясо</strong> — Каберне Совиньон, Мерло.<br><strong>Птица/рыба</strong> — Пино Гриджио, Совиньон Блан.<br><strong>Десерты</strong> — Просекко, Мускат.</p>
-        <div class="qa-dishes">
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('стейк')">🥩 Стейки</span>
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('куриная')">🍗 Птица</span>
-        </div>
-        <div class="tip-box">💡 <strong>Совет:</strong> Спроси, что гость предпочитает — сухое или полусладкое.</div>
-      </div>
-    </div>
-
-    <div class="qa-card" onclick="toggleQA(this)">
-      <div class="qa-header"><div class="qa-question">Есть детское меню?</div><div class="qa-toggle">▼</div></div>
-      <div class="qa-answer">
-        <p><strong>Да!</strong> Паста, котлетки, супы, компот. Без острого, с мягкими текстурами.</p>
-        <div class="qa-dishes">
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('детское')">🧒 Детское меню</span>
-        </div>
-        <div class="tip-box">💡 <strong>Совет:</strong> Спроси возраст ребёнка — для малышей есть мелко нарезанные блюда.</div>
-      </div>
-    </div>
-
-    <div class="qa-card" onclick="toggleQA(this)">
-      <div class="qa-header"><div class="qa-question">Есть острое?</div><div class="qa-toggle">▼</div></div>
-      <div class="qa-answer">
-        <p><strong>Том-Ям</strong> — тайская классика с чили и лаймом. Также острые соусы к мангалу.</p>
-        <div class="qa-dishes">
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('том-ям')">🍲 Том-Ям</span>
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('мангал')">🔥 Мангал</span>
-        </div>
-        <div class="tip-box">💡 <strong>Совет:</strong> Уточни уровень остроты — иногда гость хочет "слегка пикантно".</div>
-      </div>
-    </div>
-
-    <div class="qa-card" onclick="toggleQA(this)">
-      <div class="qa-header"><div class="qa-question">Без глютена?</div><div class="qa-toggle">▼</div></div>
-      <div class="qa-answer">
-        <p><strong>Салаты, супы, горячее без хлеба</strong> — большинство блюд можно подать без глютена.</p>
-        <div class="qa-dishes">
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат')">🥗 Салаты</span>
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('борщ')">🥣 Борщ</span>
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('стейк')">🥩 Стейки</span>
-        </div>
-        <div class="tip-box">💡 <strong>Совет:</strong> Уточни у шефа — иногда в соусах есть мука.</div>
-      </div>
-    </div>
-
-    <div class="qa-card" onclick="toggleQA(this)">
-      <div class="qa-header"><div class="qa-question">Без лактозы?</div><div class="qa-toggle">▼</div></div>
-      <div class="qa-answer">
-        <p><strong>Мясо, рыба, овощи</strong> — естественно без лактозы. Салаты без сыра, супы без сливок.</p>
-        <div class="qa-dishes">
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('стейк')">🥩 Стейки</span>
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('мангал')">🔥 Мангал</span>
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат здоровье')">🥗 Салат Здоровье</span>
-        </div>
-        <div class="tip-box">💡 <strong>Совет:</strong> Соусы на сливках — заменим на оливковые.</div>
-      </div>
-    </div>
-
-    <div class="qa-card" onclick="toggleQA(this)">
-      <div class="qa-header"><div class="qa-question">Вегетарианское?</div><div class="qa-toggle">▼</div></div>
-      <div class="qa-answer">
-        <p><strong>Салаты, паста, овощи на гриле</strong> — отличный выбор.</p>
-        <div class="qa-dishes">
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат дача новый')">🥗 Салат Дача</span>
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('паста')">🍝 Паста</span>
-        </div>
-        <div class="tip-box">💡 <strong>Совет:</strong> Уточни — веган или лакто-ово? Есть блюда с сыром.</div>
-      </div>
-    </div>
-
-    <div class="qa-card" onclick="toggleQA(this)">
-      <div class="qa-header"><div class="qa-question">Какая прожарка стейка?</div><div class="qa-toggle">▼</div></div>
-      <div class="qa-answer">
-        <p><strong>Rare</strong> — холодный центр, кровь.<br><strong>Medium Rare</strong> — тёплый розовый центр (рекомендуем).<br><strong>Medium</strong> — розовый, но плотный.<br><strong>Medium Well</strong> — чуть розового.<br><strong>Well Done</strong> — полностью прожарен.</p>
-        <div class="qa-dishes">
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('стейк')">🥩 Стейки</span>
-        </div>
-        <div class="tip-box">💡 <strong>Совет:</strong> Medium Rare — оптимум для сочности. Well Done — дольше ждать.</div>
-      </div>
-    </div>
-
-    <div class="qa-card" onclick="toggleQA(this)">
-      <div class="qa-header"><div class="qa-question">Что для компании? (4-6 человек)</div><div class="qa-toggle">▼</div></div>
-      <div class="qa-answer">
-        <p><strong>Мангал-сет, пицца, закуски</strong> — делятся и экономят время.</p>
-        <div class="qa-dishes">
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('мангал')">🔥 Мангал</span>
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('пицца')">🍕 Пицца</span>
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('закуски')">🍢 Закуски</span>
-        </div>
-        <div class="tip-box">💡 <strong>Совет:</strong> Предложи ассорти — разнообразие и выгода.</div>
-      </div>
-    </div>
-
-    <div class="qa-card" onclick="toggleQA(this)">
-      <div class="qa-header"><div class="qa-question">Что к пиву?</div><div class="qa-toggle">▼</div></div>
-      <div class="qa-answer">
-        <p><strong>Мангал, закуски, острое, хрустящее</strong> — классика.</p>
-        <div class="qa-dishes">
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('мангал')">🔥 Мангал</span>
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('закуски')">🍢 Закуски</span>
-        </div>
-        <div class="tip-box">💡 <strong>Совет:</strong> Острые соусы и солёное — отлично с пивом.</div>
-      </div>
-    </div>
-
-    <div class="qa-card" onclick="toggleQA(this)">
-      <div class="qa-header"><div class="qa-question">В чём разница между стейками?</div><div class="qa-toggle">▼</div></div>
-      <div class="qa-answer">
-        <p><strong>Рибай</strong> — мраморный, жирный, сочный.<br><strong>Филе Миньон</strong> — постный, нежный, дорогой.<br><strong>Стриплойн</strong> — баланс жира и мяса.<br><strong>Скерт</strong> — яркий вкус, бюджетнее.</p>
-        <div class="qa-dishes">
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('стейк')">🥩 Все стейки</span>
-        </div>
-        <div class="tip-box">💡 <strong>Совет:</strong> Рибай — для гурманов. Филе — для тех, кто не любит жир.</div>
       </div>
     </div>
   </main>
 
   <main class="content knowledge-section" id="knowledgeContent">
     <div class="category-title" style="margin-top:0;">📚 Знания — для официантов</div>
-
     <div class="knowledge-card" onclick="toggleKnowledge(this)">
       <div class="knowledge-header"><div class="knowledge-title">🥩 Стейки: виды и особенности</div><div class="knowledge-toggle">▼</div></div>
       <div class="knowledge-content">
         <h4>Рибай (Ribeye)</h4>
         <ul><li>Мраморная говядина с жировой прожилкой</li><li>Самый <span class="highlight">сочный и ароматный</span> стейк</li><li>Идеальная прожарка: <span class="highlight">Medium Rare — Medium</span></li></ul>
-        <h4>Филе Миньон (Tenderloin)</h4>
-        <ul><li>Самая нежная часть вырезки</li><li>Постный, мягкий, без жилок</li><li>Идеальная прожарка: <span class="highlight">Medium Rare</span></li></ul>
-        <h4>Стриплойн (Striploin / NY Strip)</h4>
-        <ul><li>Баланс мяса и жира</li><li>Насыщенный вкус, плотная текстура</li><li>Идеальная прожарка: <span class="highlight">Medium Rare — Medium</span></li></ul>
-        <h4>Скерт (Skirt)</h4>
-        <ul><li>Яркий мясной вкус</li><li>Тонкий, быстро готовится</li><li>Режется поперёк волокон</li></ul>
-        <div class="pairing-box">🍷 <strong>Пейринг:</strong> Каберне Совиньон, Мерло, Шираз</div>
-        <div class="tip-box">📌 <strong>Правило:</strong> Все стейки отдыхают 3-5 минут после жарки. Не разрезать сразу!</div>
-      </div>
-    </div>
-
-    <div class="knowledge-card" onclick="toggleKnowledge(this)">
-      <div class="knowledge-header"><div class="knowledge-title">🏭 Мираторг: что это и почему важно</div><div class="knowledge-toggle">▼</div></div>
-      <div class="knowledge-content">
-        <h4>О бренде</h4>
-        <ul><li>Крупнейший производитель говядины в России</li><li><span class="highlight">Собственное поголовье</span> — контроль от поля до тарелки</li><li>Зерновой откорм — мягкое мраморное мясо</li></ul>
-        <h4>Почему говорим гостю</h4>
-        <ul><li>Российское качество — не хуже импорта</li><li>Прозрачное происхождение — знаем, что кормили</li><li>Свежесть — короткая цепочка поставок</li></ul>
-        <div class="tip-box">📌 <strong>Скрипт:</strong> "У нас мясо от Мираторга — зерновой откорм, российское, мраморное. Пробовали?"</div>
-      </div>
-    </div>
-
-    <div class="knowledge-card" onclick="toggleKnowledge(this)">
-      <div class="knowledge-header"><div class="knowledge-title">🔥 Мангал: особенности и подача</div><div class="knowledge-toggle">▼</div></div>
-      <div class="knowledge-content">
-        <h4>Технология</h4>
-        <ul><li>Жарка на <span class="highlight">углях из дуба и ольхи</span></li><li>Дым придаёт особый аромат</li><li>Мясо маринуется минимум 4 часа</li></ul>
-        <h4>Что спросить гостя</h4>
-        <ul><li>Степень прожарки — для люля и стейков</li><li>Соус — ткемали, сацебели, аджика</li><li>Гарнир — овощи на гриле, лаваш</li></ul>
-        <div class="tip-box">📌 <strong>Совет:</strong> Мангал готовится 15-25 минут. Предупреди гостя заранее.</div>
-      </div>
-    </div>
-
-    <div class="knowledge-card" onclick="toggleKnowledge(this)">
-      <div class="knowledge-header"><div class="knowledge-title">🥣 Соусы: пейринги и подача</div><div class="knowledge-toggle">▼</div></div>
-      <div class="knowledge-content">
-        <h4>Ткемали</h4>
-        <ul><li>Кисло-сладкий, сливовый</li><li>К мангалу, птице, свинине</li></ul>
-        <h4>Сацебели</h4>
-        <ul><li>Томатный, с зеленью и чесноком</li><li>Универсальный — ко всему мангалу</li></ul>
-        <h4>Аджика</h4>
-        <ul><li>Острая, перечная</li><li>Для тех, кто любит огонь</li></ul>
-        <h4>Соус на основе егермейстера</h4>
-        <ul><li>Авторский соус шефа — корица, апельсин, травы</li><li>К утке, оленине, тыкве</li></ul>
-        <div class="tip-box">📌 <strong>Правило:</strong> Соус подаём отдельно — гость сам решает, сколько добавить.</div>
-      </div>
-    </div>
-
-    <div class="knowledge-card" onclick="toggleKnowledge(this)">
-      <div class="knowledge-header"><div class="knowledge-title">🐟 Рыба: свежесть и виды</div><div class="knowledge-toggle">▼</div></div>
-      <div class="knowledge-content">
-        <h4>Сигнальные признаки свежести</h4>
-        <ul><li>Глаза <span class="highlight">блестящие, выпуклые</span></li><li>Жабры — ярко-красные</li><li>Запах — морской, не аммиачный</li></ul>
-        <h4>Популярные виды в меню</h4>
-        <ul><li>Форель — нежная, копчёная/жареная</li><li>Судак — белое мясо, минимум костей</li><li>Сёмга — жирная, для стейка или гриля</li></ul>
-        <div class="tip-box">📌 <strong>Совет:</strong> Рыба на гриле — 12-15 минут. Не пересушить!</div>
-      </div>
-    </div>
-
-    <div class="knowledge-card" onclick="toggleKnowledge(this)">
-      <div class="knowledge-header"><div class="knowledge-title">💬 Скрипты продаж</div><div class="knowledge-toggle">▼</div></div>
-      <div class="knowledge-content">
-        <h4>Апселл (дороже)</h4>
-        <ul><li>"Попробуйте наш <span class="highlight">Рибай</span> — мраморный, сочный. Это флагман меню."</li><li>"К вину рекомендую <span class="highlight">сырную тарелку</span> — баланс вкусов."</li></ul>
-        <h4>Кросселл (допродажа)</h4>
-        <ul><li>"К стейку подойдёт <span class="highlight">соус на основе егермейстера</span> — авторский."</li><li>"После основного — у нас есть <span class="highlight">домашний чизкейк</span>."</li></ul>
-        <h4>Работа с возражениями</h4>
-        <ul><li>"Дорого" → "Это мясо от Мираторга, зерновой откорв. Попробуйте — поймёте разницу."</li><li>"Долго" → "Мангал готовится 20 минут, но это того стоит. Могу принести закуску сейчас."</li></ul>
-        <div class="tip-box">📌 <strong>Золотое правило:</strong> Не продавай — рекомендуй. Гость чувствует разницу.</div>
+        <div class="pairing-box">🍷 <strong>Пейринг:</strong> Каберне Совиньон, Мерло</div>
+        <div class="tip-box">📌 <strong>Правило:</strong> Все стейки отдыхают 3-5 минут после жарки.</div>
       </div>
     </div>
   </main>
@@ -531,7 +307,6 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
   </nav>
 </div>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="modal-title" id="modalTitle">Редактировать</div>
@@ -544,23 +319,13 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 </div>
 
 <script>
-// ==================== SAFE STORAGE ====================
-const SafeStorage = {
-  _avail: null,
-  ok() {
-    if (this._avail !== null) return this._avail;
-    try { localStorage.setItem('__t','1'); localStorage.removeItem('__t'); this._avail=true; return true; }
-    catch(e){ this._avail=false; return false; }
-  },
-  get(k){ if(!this.ok())return null; try{return localStorage.getItem(k);}catch(e){return null;} },
-  set(k,v){ if(!this.ok())return false; try{localStorage.setItem(k,v);return true;}catch(e){return false;} },
-  remove(k){ if(!this.ok())return false; try{localStorage.removeItem(k);return true;}catch(e){return false;} }
-};
+// ==================== CONFIG ====================
+const CHEFBOOK_URL = 'https://cheshir32rus.github.io/chef-book-dacha2026.V5.0/';
+const PINS = { chef: '1990', admin: '1880' };
 
-// ==================== FIREBASE CONFIG ====================
-// ЗАМЕНИТЕ на свои данные из Firebase Console → Project Settings → SDK
+// ==================== FIREBASE ====================
 const firebaseConfig = {
-  apiKey: "AIzaSyD0btkgb0fubdPxRK4CNKkH-uEZWdCwyzg",
+  apiKey: "AIzaSyD0btkgb0fubdPxRK4CNKkH-uEZWdCwvz8",
   authDomain: "dacha-waiteros.firebaseapp.com",
   databaseURL: "https://dacha-waiteros-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "dacha-waiteros",
@@ -569,123 +334,42 @@ const firebaseConfig = {
   appId: "1:426670517004:web:227223af23eddd3dfc7729"
 };
 
+let db = null;
 let firebaseApp = null;
-let firebaseDb = null;
-let syncListener = null;
-let isSyncing = false;
 
 function initFirebase() {
+  if (typeof firebase === 'undefined') { console.warn('Firebase SDK not loaded'); return false; }
   try {
-    // Check if Firebase SDK loaded
-    if (typeof firebase === 'undefined') {
-      console.warn('Firebase SDK not loaded');
-      updateSyncStatus('offline');
-      return false;
-    }
-    if (!firebase.apps.length) {
-      firebaseApp = firebase.initializeApp(firebaseConfig);
-    } else {
-      firebaseApp = firebase.app();
-    }
-    firebaseDb = firebase.database();
-    firebaseDb.goOnline();
-    updateSyncStatus('online');
-    listenMenuChanges();
+    if (!firebaseApp) { firebaseApp = firebase.initializeApp(firebaseConfig); }
+    db = firebase.database();
+    console.log('Firebase initialized');
     return true;
-  } catch (e) {
-    console.warn('Firebase init error:', e);
-    updateSyncStatus('offline');
-    return false;
-  }
+  } catch(e) { console.error('Firebase init error:', e); return false; }
 }
 
-function loadMenuFromFirebase(callback) {
-  if (!firebaseDb) { if (callback) callback(false); return; }
-  updateSyncStatus('syncing');
-  firebaseDb.ref('menu/dishes').once('value').then(function(snapshot) {
+function loadMenuFromFirebase() {
+  if (!db) return;
+  db.ref('menu').once('value').then(function(snapshot) {
     var data = snapshot.val();
-    if (data && Array.isArray(data) && data.length > 0) {
-      menuData = data;
-      renderMenu();
-      applyRolePermissions();
-      updateSyncStatus('online');
-      if (callback) callback(true);
-    } else {
-      // First run — save default menu
-      saveMenuToFirebase(function() {
-        updateSyncStatus('online');
-        if (callback) callback(true);
-      });
-    }
-  }).catch(function(err) {
-    console.warn('Load error:', err);
-    updateSyncStatus('offline');
-    if (callback) callback(false);
-  });
-}
-
-function saveMenuToFirebase(callback) {
-  if (!firebaseDb) { if (callback) callback(false); return; }
-  var isStaff = currentUser && (currentUser.role === 'chef' || currentUser.role === 'admin');
-  if (!isStaff) { if (callback) callback(false); return; }
-  updateSyncStatus('syncing');
-  var payload = {
-    dishes: menuData,
-    lastUpdated: Date.now(),
-    updatedBy: currentUser ? currentUser.name : 'unknown'
-  };
-  firebaseDb.ref('menu').set(payload).then(function() {
-    updateSyncStatus('online');
-    if (callback) callback(true);
-  }).catch(function(err) {
-    console.warn('Save error:', err);
-    updateSyncStatus('offline');
-    if (callback) callback(false);
-  });
-}
-
-function listenMenuChanges() {
-  if (!firebaseDb) return;
-  if (syncListener) syncListener.off();
-  syncListener = firebaseDb.ref('menu/dishes');
-  syncListener.on('value', function(snapshot) {
-    var data = snapshot.val();
-    if (data && Array.isArray(data)) {
-      // Only update if different (avoid loop)
-      var currentJson = JSON.stringify(menuData);
-      var newJson = JSON.stringify(data);
-      if (currentJson !== newJson) {
-        menuData = data;
-        renderMenu();
-        applyRolePermissions();
+    if (!data) return;
+    for (var id in data) {
+      var dish = menuData.find(function(d) { return d.id === id; });
+      if (dish) {
+        if (data[id].price !== undefined) dish.price = data[id].price;
+        if (data[id].photo !== undefined) dish.photo = data[id].photo;
       }
     }
-  });
+    renderMenu();
+    console.log('Menu loaded from Firebase');
+  }).catch(function(e) { console.error('Firebase load error:', e); });
 }
 
-function updateSyncStatus(status) {
-  var el = document.getElementById('syncStatus');
-  if (!el) return;
-  if (status === 'online') {
-    el.textContent = '🟢 Онлайн';
-    el.style.color = 'var(--status-green)';
-  } else if (status === 'offline') {
-    el.textContent = '🔴 Офлайн';
-    el.style.color = 'var(--status-red)';
-  } else if (status === 'syncing') {
-    el.textContent = '🟡 Синхронизация...';
-    el.style.color = 'var(--status-yellow)';
-  }
+function saveDishToFirebase(id, updates) {
+  if (!db) return Promise.resolve();
+  return db.ref('menu/' + id).update(updates).then(function() {
+    console.log('Saved to Firebase:', id, updates);
+  }).catch(function(e) { console.error('Firebase save error:', e); });
 }
-
-function autoSave() {
-  if (!currentUser || (currentUser.role !== 'chef' && currentUser.role !== 'admin')) return;
-  saveMenuToFirebase();
-}
-
-// ==================== CONFIG ====================
-const CHEFBOOK_URL = 'https://cheshir32rus.github.io/chef-book-dacha2026.V5.0/';
-const PASSWORDS = { chef: 'chef-dacha-2026', admin: 'admin-dacha-2026' };
 
 // ==================== JSON MENU DATA ====================
 const menuData = [
@@ -791,21 +475,23 @@ function doLogin() {
     currentUser = { role: 'waiter', name: name };
   } else {
     const pass = document.getElementById('passwordInput').value;
-    if (pass !== PASSWORDS[selectedRole]) { errorEl.textContent = 'Неверный пароль'; return; }
+    if (pass !== PINS[selectedRole]) { errorEl.textContent = 'Неверный PIN'; return; }
     currentUser = { role: selectedRole, name: selectedRole === 'chef' ? 'Шеф' : 'Админ' };
   }
-  try { SafeStorage.set('waiteros-user', JSON.stringify(currentUser)); } catch(e) {}
+  try { localStorage.setItem('fetbook-user', JSON.stringify(currentUser)); } catch(e) {}
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('mainApp').style.display = 'block';
   updateUserBadge();
   applyRolePermissions();
   renderMenu();
   initTheme();
+  initFirebase();
+  loadMenuFromFirebase();
 }
 
 function logout() {
   currentUser = null;
-  try { SafeStorage.remove('waiteros-user'); } catch(e) {}
+  try { localStorage.removeItem('fetbook-user'); } catch(e) {}
   document.getElementById('loginScreen').classList.remove('hidden');
   document.getElementById('mainApp').style.display = 'none';
   document.getElementById('passwordInput').value = '';
@@ -824,18 +510,23 @@ function applyRolePermissions() {
   var isChef = currentUser && currentUser.role === 'chef';
   var isAdmin = currentUser && currentUser.role === 'admin';
   var isStaff = isChef || isAdmin;
-  // admin-controls visibility now handled in renderMenu via adminVisible variable
-  document.querySelectorAll('.chef-only').forEach(function(el) { el.style.display = isChef ? 'inline-block' : 'none'; });
+  var controls = document.querySelectorAll('.admin-controls');
+  for (var i = 0; i < controls.length; i++) {
+    if (isStaff) controls[i].classList.add('visible');
+    else controls[i].classList.remove('visible');
+  }
+  var chefOnly = document.querySelectorAll('.chef-only');
+  for (var i = 0; i < chefOnly.length; i++) {
+    chefOnly[i].style.display = isChef ? 'inline-block' : 'none';
+  }
   var roleLabel = isChef ? ' | Шеф' : isAdmin ? ' | Админ' : ' | Официант';
   var vt = document.getElementById('versionText');
   if (vt) vt.textContent = menuData.length + ' позиций | Знания | Вопросы' + roleLabel;
-  var sb = document.getElementById('saveBtn');
-  if (sb) sb.style.display = isStaff ? 'inline-block' : 'none';
 }
 
 function checkAutoLogin() {
   try {
-    const saved = SafeStorage.get('waiteros-user');
+    const saved = localStorage.getItem('fetbook-user');
     if (saved) {
       currentUser = JSON.parse(saved);
       document.getElementById('loginScreen').classList.add('hidden');
@@ -844,6 +535,8 @@ function checkAutoLogin() {
       applyRolePermissions();
       renderMenu();
       initTheme();
+      initFirebase();
+      loadMenuFromFirebase();
     }
   } catch(e) {}
 }
@@ -872,6 +565,8 @@ function renderMenu() {
         allergensHtml = dish.allergens.map(a => '<span class="allergen-tag warning">' + (allergenMap[a] || a) + '</span>').join('');
       }
 
+      var adminVisible = (currentUser && (currentUser.role === 'chef' || currentUser.role === 'admin')) ? 'visible' : '';
+
       html += '<div class="dish-card" data-category="' + cat + '" data-allergens="' + allergensStr + '" ' + vegAttr + ' data-name="' + dish.name.toLowerCase() + '" data-tk="' + dish.id + '" data-price="' + dish.price + '" data-photo="' + dish.photo + '" onclick="toggleCard(this)">';
       html += '  <div class="dish-header">';
       html += '    <div class="dish-photo">' + photoHtml + '</div>';
@@ -894,18 +589,18 @@ function renderMenu() {
       html += '      <span class="time-tag">⏱️ ' + dish.time + '</span>';
       html += '    </div>';
       html += '    <a class="tk-link" href="' + CHEFBOOK_URL + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">📋 Открыть ChefBook</a>';
-      var adminVisible = (currentUser && (currentUser.role === 'chef' || currentUser.role === 'admin')) ? 'visible' : '';
       html += '    <div class="admin-controls ' + adminVisible + '" id="admin-' + dish.id + '">';
-      html += '      <button class="admin-btn" onclick="event.stopPropagation(); editDish(' + dish.id + ')">✏️ Редактировать</button>';
-      html += '      <button class="admin-btn" onclick="event.stopPropagation(); setPrice(' + dish.id + ')">💰 Цена</button>';
-      html += '      <button class="admin-btn" onclick="event.stopPropagation(); uploadPhoto(' + dish.id + ')">📷 Загрузить</button>';
-      html += '      <button class="admin-btn" onclick="event.stopPropagation(); setPhoto(' + dish.id + ')">🌐 URL</button>';
-      html += '      <button class="admin-btn delete chef-only" onclick="event.stopPropagation(); deleteDish(' + dish.id + ')">🗑️ Удалить</button>';
+      html += '      <button class="admin-btn" data-action="edit" data-dish-id="' + dish.id + '">✏️ Редактировать</button>';
+      html += '      <button class="admin-btn" data-action="price" data-dish-id="' + dish.id + '">💰 Цена</button>';
+      html += '      <button class="admin-btn" data-action="photo" data-dish-id="' + dish.id + '">📷 Фото</button>';
+      html += '      <button class="admin-btn delete chef-only" data-action="delete" data-dish-id="' + dish.id + '">🗑️ Удалить</button>';
       html += '    </div></div></div>';
     });
   });
 
   container.innerHTML = html;
+  applyRolePermissions();
+  attachAdminListeners();
 }
 
 // ==================== ADMIN FUNCTIONS ====================
@@ -954,6 +649,13 @@ function editDish(id) {
     dish.time = values.time || dish.time;
     dish.description = values.description || dish.description;
     dish.ingredients = values.ingredients || dish.ingredients;
+    saveDishToFirebase(id, {
+      name: dish.name,
+      weight: dish.weight,
+      time: dish.time,
+      description: dish.description,
+      ingredients: dish.ingredients
+    });
     renderMenu();
     applyRolePermissions();
   });
@@ -968,6 +670,7 @@ function setPrice(id) {
   ], function(values) {
     if (values.price && !isNaN(values.price)) {
       dish.price = values.price;
+      saveDishToFirebase(id, { price: dish.price });
       renderMenu();
       applyRolePermissions();
     }
@@ -982,6 +685,7 @@ function setPhoto(id) {
     { id: 'photo', label: 'URL фото', value: dish.photo, placeholder: 'https://...' }
   ], function(values) {
     dish.photo = values.photo;
+    saveDishToFirebase(id, { photo: dish.photo });
     renderMenu();
     applyRolePermissions();
   });
@@ -992,57 +696,36 @@ function deleteDish(id) {
   const idx = menuData.findIndex(d => d.id === id);
   if (idx > -1) {
     menuData.splice(idx, 1);
+    if (db) db.ref('menu/' + id).remove();
     renderMenu();
     applyRolePermissions();
   }
 }
 
-// ==================== UPLOAD PHOTO ====================
-function uploadPhoto(id) {
-  var dish = menuData.find(function(d){ return d.id === id; });
-  if (!dish) return;
+// ==================== ADMIN LISTENERS ====================
+function attachAdminListeners() {
+  var container = document.getElementById('menuContent');
+  if (!container) return;
+  container.removeEventListener('click', handleAdminClick);
+  container.addEventListener('click', handleAdminClick);
+}
 
-  // Create hidden file input
-  var input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.style.display = 'none';
-  document.body.appendChild(input);
-
-  input.onchange = function(e) {
-    var file = e.target.files[0];
-    if (!file) { document.body.removeChild(input); return; }
-
-    var reader = new FileReader();
-    reader.onload = function(evt) {
-      var img = new Image();
-      img.onload = function() {
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        var maxSize = 400;
-        var w = img.width, h = img.height;
-        if (w > h) { if (w > maxSize) { h *= maxSize/w; w = maxSize; } }
-        else { if (h > maxSize) { w *= maxSize/h; h = maxSize; } }
-        canvas.width = w;
-        canvas.height = h;
-        ctx.drawImage(img, 0, 0, w, h);
-
-        // Compress to JPEG base64, quality 0.8
-        var dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-        dish.photo = dataUrl;
-        renderMenu();
-        applyRolePermissions();
-        autoSave();
-
-        // Cleanup
-        document.body.removeChild(input);
-      };
-      img.src = evt.target.result;
-    };
-    reader.readAsDataURL(file);
-  };
-
-  input.click();
+function handleAdminClick(e) {
+  var btn = e.target.closest('.admin-btn');
+  if (!btn) return;
+  e.stopPropagation();
+  var action = btn.getAttribute('data-action');
+  var id = btn.getAttribute('data-dish-id');
+  if (!action || !id) return;
+  try {
+    if (action === 'edit') editDish(id);
+    else if (action === 'price') setPrice(id);
+    else if (action === 'photo') setPhoto(id);
+    else if (action === 'delete') deleteDish(id);
+  } catch(err) {
+    alert('Ошибка: ' + (err.message || err));
+    console.error('Admin button error:', err);
+  }
 }
 
 // ==================== THEME ====================
@@ -1057,11 +740,11 @@ function applyTheme(index) {
   if (themes[index]) body.classList.add(themes[index]);
   document.getElementById('themeIcon').textContent = themeIcons[index];
   document.getElementById('themeLabel').textContent = themeNames[index];
-  try { SafeStorage.set('waiteros-theme', themes[index]); } catch(e) {}
+  try { localStorage.setItem('fetbook-theme', themes[index]); } catch(e) {}
 }
 function nextTheme() { currentThemeIndex = (currentThemeIndex + 1) % themes.length; applyTheme(currentThemeIndex); }
 function initTheme() {
-  try { var saved = SafeStorage.get('waiteros-theme'); if (saved) { var idx = themes.indexOf(saved); if (idx >= 0) { currentThemeIndex = idx; applyTheme(idx); } } } catch(e) {}
+  try { var saved = localStorage.getItem('fetbook-theme'); if (saved) { var idx = themes.indexOf(saved); if (idx >= 0) { currentThemeIndex = idx; applyTheme(idx); } } } catch(e) {}
 }
 
 // ==================== UI FUNCTIONS ====================
@@ -1115,7 +798,6 @@ function showKnowledge() {
 }
 function focusSearch() { showMenu(); document.getElementById('searchBox').focus(); }
 
-// Filters
 document.querySelectorAll('#categoryFilters .filter-btn').forEach(btn => {
   btn.addEventListener('click', function(e) {
     e.stopPropagation();
@@ -1155,7 +837,6 @@ function applyFilters() {
   });
 }
 
-// Search
 document.getElementById('searchBox').addEventListener('input', function(e) {
   const term = e.target.value.toLowerCase().trim();
   if (expandedCard) { expandedCard.classList.remove('expanded'); expandedCard = null; }
@@ -1192,22 +873,8 @@ function navigateToDish(dishName) {
   }
 }
 
-// Init
-function initApp() {
-  checkAutoLogin();
-  if (!currentUser) {
-    selectRole('chef');
-    var ls = document.getElementById('loginScreen');
-    var ma = document.getElementById('mainApp');
-    if (ls) ls.classList.remove('hidden');
-    if (ma) ma.style.display = 'none';
-  }
-}
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initApp);
-} else {
-  initApp();
-}
+checkAutoLogin();
+if (!currentUser) selectRole('chef');
 </script>
 </body>
 </html>
