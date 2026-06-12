@@ -189,6 +189,11 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 ::-webkit-scrollbar-track { background:var(--bg-primary); }
 ::-webkit-scrollbar-thumb { background:var(--border-strong); border-radius:3px; }
 @media (max-width:768px) { ::-webkit-scrollbar { display:none; } .dish-card { touch-action:manipulation; } }
+
+.add-btn-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px; }
+#addDishContainer { padding:0 16px 8px 16px; }
+#addQABtn, #addKnowledgeBtn { background:var(--accent-primary); color:#1a1a2e; border-color:var(--accent-primary); font-weight:600; }
+#addQABtn:hover, #addKnowledgeBtn:hover { background:var(--accent-secondary); transform:translateY(-1px); }
 </style>
 <base target="_blank">
 </head>
@@ -242,6 +247,9 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
   <div class="search-container" id="searchContainer">
     <input type="text" class="search-box" id="searchBox" placeholder="Поиск по названию, составу или номеру ТК...">
   </div>
+  <div style="padding:0 16px 8px 16px;display:none;" id="addDishContainer">
+    <button class="admin-btn" onclick="addNewDish()">➕ Добавить блюдо</button>
+  </div>
 
   <div class="filters" id="categoryFilters">
     <button class="filter-btn active" data-category="all">Все</button>
@@ -272,31 +280,592 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
   <main class="content" id="menuContent"></main>
 
   <main class="content qa-section" id="qaContent">
-    <div class="category-title" style="margin-top:0;">❓ Вопросы гостей</div>
-    <div class="qa-card" onclick="toggleQA(this)">
-      <div class="qa-header"><div class="qa-question">Что быстро? (до 10 мин)</div><div class="qa-toggle">▼</div></div>
-      <div class="qa-answer">
-        <p><strong>Салаты и закуски</strong> — готовятся за 5-10 минут.</p>
-        <div class="qa-dishes">
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат дача новый')">🥗 Салат Дача Новый</span>
-          <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат здоровье')">🥗 Салат Здоровье</span>
-        </div>
-        <div class="tip-box">💡 <strong>Совет:</strong> Если гость спешит — предложи салат + закуску.</div>
-      </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div class="category-title" style="margin-top:0;">❓ Вопросы гостей</div>
+      <button class="admin-btn" id="addQABtn" style="display:none;" onclick="event.stopPropagation();addNewQA()">➕ Добавить вопрос</button>
     </div>
+<div class="category-title" style="margin-top:0;">❓ Вопросы гостей</div>
+
+        <div class="qa-card" onclick="toggleQA(this)">
+            <div class="qa-header">
+                <div class="qa-question">Что быстро? (до 10 мин)</div>
+                <div class="qa-toggle">▼</div>
+            </div>
+            <div class="qa-answer">
+                <p><strong>Салаты и закуски</strong> — готовятся за 5-10 минут. Все ингредиенты нарезаны, собираются на заказ.</p>
+                <div style="margin-top:10px; font-size:11px; color:var(--text-muted); margin-bottom:6px;">Быстрые позиции:</div>
+                <div class="qa-dishes">
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат дача новый')">🥗 Салат Дача Новый</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат с морепродуктами')">🦐 Салат с морепродуктами</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат здоровье')">🥗 Салат Здоровье</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат каприз')">🥗 Салат Каприз</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат мимоза')">🥗 Салат Мимоза</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('сельдь под шубой')">🥗 Сельдь под шубой</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('тайский салат')">🥗 Тайский салат</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('вителло тоннато')">🍽 Вителло тоннато</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('гренки с айоле')">🍽 Гренки с айоле</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('креветки в темпуре')">🦐 Креветки в темпуре</span>
+                </div>
+                <div class="tip-box" style="margin-top:12px; background:rgba(251,191,36,0.1); border-left:3px solid var(--status-yellow); padding:10px 12px; border-radius:0 8px 8px 0;">
+                    💡 <strong>Совет официанту:</strong> Если гость спешит — предложи салат + закуску. Комбо выходит быстрее, чем одно горячее.
+                </div>
+            </div>
+        </div>
+
+        <div class="qa-card" onclick="toggleQA(this)">
+            <div class="qa-header">
+                <div class="qa-question">Что лёгкое? (низкая калорийность)</div>
+                <div class="qa-toggle">▼</div>
+            </div>
+            <div class="qa-answer">
+                <p><strong>Салаты без майонеза и сливок</strong> — самые лёгкие. Супы на бульоне тоже хороший выбор.</p>
+                <div style="margin-top:10px; font-size:11px; color:var(--text-muted); margin-bottom:6px;">Лёгкие позиции:</div>
+                <div class="qa-dishes">
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат дача новый')">🥗 Салат Дача Новый</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат здоровье')">🥗 Салат Здоровье</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат с ростбифом')">🥗 Салат с ростбифом</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('тайский салат')">🥗 Тайский салат</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат нисуаз')">🥗 Салат Нисуаз</span>
+                    
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('суп куриный с фрикаделька')">🍗 Суп куриный с фрикадельками</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('овощи гриль')">🍖 Овощи гриль</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('стейк лосося')">🐟 Стейк лосося</span>
+                </div>
+                <div class="tip-box" style="margin-top:12px; background:rgba(52,211,153,0.1); border-left:3px solid var(--status-green); padding:10px 12px; border-radius:0 8px 8px 0;">
+                    💡 <strong>Совет официанту:</strong> "Если хотите совсем лёгкое — возьмите Салат Дача Новый или Уха. Если после салата захочется чего-то более сытного — можно добавить рыбу или пасту."
+                </div>
+            </div>
+        </div>
+
+        <div class="qa-card" onclick="toggleQA(this)">
+            <div class="qa-header">
+                <div class="qa-question">Что подходит к вину?</div>
+                <div class="qa-toggle">▼</div>
+            </div>
+            <div class="qa-answer">
+                <p><strong>К красному вину:</strong> стейки, мангал, бургеры, бефстроганов, ребра барбекю.<br>
+                <strong>К белому вину:</strong> рыба, морепродукты, паста с морепродуктами, лёгкие салаты.<br>
+                <strong>К игристому:</strong> закуски, брускетты, креветки в темпуре, сыры.</p>
+                <div style="margin-top:10px; font-size:11px; color:var(--text-muted); margin-bottom:6px;">По категориям:</div>
+                <div class="qa-dishes">
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('красное: стейк рибай')">🍷 Красное: Стейк Рибай</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('красное: каре барашка')">🍷 Красное: Каре барашка</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('красное: бургер')">🍷 Красное: Бургер</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('белое: стейк лосося')">🥂 Белое: Стейк лосося</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('белое: паста с морепродук')">🥂 Белое: Паста с морепродуктами</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('белое: салат с морепродук')">🥂 Белое: Салат с морепродуктами</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('игристое: брускетты')">🍾 Игристое: Брускетты</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('игристое: жареный сыр')">🍾 Игристое: Жареный сыр</span>
+                </div>
+                <div class="tip-box" style="margin-top:12px; background:rgba(167,139,250,0.1); border-left:3px solid var(--status-purple); padding:10px 12px; border-radius:0 8px 8px 0;">
+                    💡 <strong>Совет официанту:</strong> "К вашему вину отлично подойдёт..." — всегда начинай с конкретного блюда, а не с общего списка. Гость ценит уверенность.
+                </div>
+            </div>
+        </div>
+
+        <div class="qa-card" onclick="toggleQA(this)">
+            <div class="qa-header">
+                <div class="qa-question">Что для детей? (3-12 лет)</div>
+                <div class="qa-toggle">▼</div>
+            </div>
+            <div class="qa-answer">
+                <p><strong>Детское меню:</strong> привычные вкусы, мягкие текстуры, ничего острого. Порции меньше, цена ниже.</p>
+                <div style="margin-top:10px; font-size:11px; color:var(--text-muted); margin-bottom:6px;">Детские фавориты:</div>
+                <div class="qa-dishes">
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('макарошки с сыром')">🧸 Макарошки с сыром</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('наггетсы')">🧸 Наггетсы</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('совёнок')">🧸 Совёнок</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('супчик со звёздочками')">🧸 Супчик со звёздочками</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('пицца сырная')">🍕 Пицца Сырная</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('пицца брянская')">🍕 Пицца Брянская</span>
+                </div>
+                <div class="tip-box" style="margin-top:12px; background:rgba(249,168,212,0.1); border-left:3px solid #f9a8d4; padding:10px 12px; border-radius:0 8px 8px 0;">
+                    💡 <strong>Совет официанту:</strong> "Для ребёнка рекомендую Совёнок — там и картофельное пюре, и наггетсы, и овощи. Всё в одном блюде, ребёнок не устанет ждать."
+                </div>
+            </div>
+        </div>
+
+        <div class="qa-card" onclick="toggleQA(this)">
+            <div class="qa-header">
+                <div class="qa-question">Что острое?</div>
+                <div class="qa-toggle">▼</div>
+            </div>
+            <div class="qa-answer">
+                <p><strong>Острые позиции:</strong> азиатские соусы, перец чили, горчица, пепперони. Степень остроты — средняя, не экстремальная.</p>
+                <div style="margin-top:10px; font-size:11px; color:var(--text-muted); margin-bottom:6px;">Острое:</div>
+                <div class="qa-dishes">
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('️ том-ям')">🌶️ Том-Ям</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('️ тайский салат')">🌶️ Тайский салат</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('️ креветки в темпуре (сла')">🌶️ Креветки в темпуре (сладкий чили)</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('️ колбаски куриные')">🌶️ Колбаски куриные</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('️ колбаски свиные')">🌶️ Колбаски свиные</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('️ сковорода дача')">🌶️ Сковорода Дача</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('️ свиные ребра барбекю')">🌶️ Свиные ребра барбекю</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('️ пицца пепперони')">🌶️ Пицца пепперони</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('️ пицца со страчателлой')">🌶️ Пицца со страчателлой</span>
+                </div>
+                <div class="tip-box" style="margin-top:12px; background:rgba(239,68,68,0.1); border-left:3px solid #ef4444; padding:10px 12px; border-radius:0 8px 8px 0;">
+                    💡 <strong>Совет официанту:</strong> "Если любите острое — Том-Ям огонь. Если хотите поострее, но не экстремально — Тайский салат или колбаски."
+                </div>
+            </div>
+        </div>
+
+        <div class="qa-card" onclick="toggleQA(this)">
+            <div class="qa-header">
+                <div class="qa-question">Что без глютена?</div>
+                <div class="qa-toggle">▼</div>
+            </div>
+            <div class="qa-answer">
+                <p><strong>Без глютена:</strong> все блюда без макарон, пиццы, хлеба, пельменей/вареников, сухариков, бородинского хлеба, багета, бриоши, лаваша.</p>
+                <div style="margin-top:10px; font-size:11px; color:var(--text-muted); margin-bottom:6px;">Без глютена:</div>
+                <div class="qa-dishes">
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('все салаты (кроме цезарей')">🥗 Все салаты (кроме Цезарей — сухарики)</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('все супы (кроме супчика)')">🍲 Все супы (кроме Супчика)</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('все стейки')">🔥 Все стейки</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('весь мангал')">🍖 Весь мангал</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('запечённые креветки')">🦐 Запечённые креветки</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('курица терияки')">🍗 Курица терияки</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('бефстроганов')">🥩 Бефстроганов</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('стейк лосося')">🐟 Стейк лосося</span>
+                </div>
+                <div class="tip-box" style="margin-top:12px;">
+                    ⚠️ <strong>Важно:</strong> Салат Цезарь — в нём сухарики (глютен). Салат с печенью — бекон и гренки могут содержать глютен. Уточняйте у гостя, что именно исключается.
+                </div>
+            </div>
+        </div>
+
+        <div class="qa-card" onclick="toggleQA(this)">
+            <div class="qa-header">
+                <div class="qa-question">Что без лактозы?</div>
+                <div class="qa-toggle">▼</div>
+            </div>
+            <div class="qa-answer">
+                <p><strong>Без лактозы:</strong> всё без сливок, сметаны, сыра, сливочного масла, майонеза.</p>
+                <div style="margin-top:10px; font-size:11px; color:var(--text-muted); margin-bottom:6px;">Без лактозы:</div>
+                <div class="qa-dishes">
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('каре барашка')">🍖 Каре барашка</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('колбаски')">🍗 Колбаски</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('шашлык')">🍖 Шашлык</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('горячая говяжья сковородк')">🔥 Горячая говяжья сковородка</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('курица терияки')">🍗 Курица терияки</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат здоровье')">🥗 Салат Здоровье</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат нисуаз')">🥗 Салат Нисуаз</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('тайский салат')">🥗 Тайский салат</span>
+                    
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('суп куриный')">🍗 Суп куриный</span>
+                </div>
+                <div class="tip-box" style="margin-top:12px;">
+                    ⚠️ <strong>Важно:</strong> Многие соусы содержат сливки или сметану. Если гость строго без лактозы — уточняйте у кухни состав соуса к конкретному блюду.
+                </div>
+            </div>
+        </div>
+
+        <div class="qa-card" onclick="toggleQA(this)">
+            <div class="qa-header">
+                <div class="qa-question">Что вегетарианское?</div>
+                <div class="qa-toggle">▼</div>
+            </div>
+            <div class="qa-answer">
+                <p><strong>Вегетарианские позиции:</strong> без мяса, рыбы, птицы. Могут содержать молочные продукты, яйца, мед.</p>
+                <div style="margin-top:10px; font-size:11px; color:var(--text-muted); margin-bottom:6px;">Вегетарианское:</div>
+                <div class="qa-dishes">
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат дача новый')">🥗 Салат Дача Новый</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат с розовыми томатами')">🥗 Салат с розовыми томатами</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат здоровье')">🥗 Салат Здоровье</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('салат каприз')">🥗 Салат Каприз</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('грибной суп')">🍲 Грибной суп</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('гренки с айоле')">🍽 Гренки с айоле</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('жареный сыр с ягодным соу')">🍽 Жареный сыр с ягодным соусом</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('вареники с творогом')">🥟 Вареники с творогом</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('вареники с грибами')">🥟 Вареники с грибами</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('вареники с вишней')">🥟 Вареники с вишней</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('спагетти')">🍝 Спагетти</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('пицца гарганзола')">🍕 Пицца Гарганзола</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('пицца сырная')">🍕 Пицца Сырная</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('пицца со страчателлой')">🍕 Пицца со страчателлой</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('макарошки с сыром')">🧸 Макарошки с сыром</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('овощи гриль')">🍖 Овощи гриль</span>
+                </div>
+                <div class="tip-box" style="margin-top:12px; background:rgba(52,211,153,0.1); border-left:3px solid var(--status-green); padding:10px 12px; border-radius:0 8px 8px 0;">
+                    💡 <strong>Совет официанту:</strong> "Если вы вегетарианец — рекомендую Пиццу Гарганзола или Вареники с грибами. Если едите рыбу — добавьте Стейк лосося или Салат Нисуаз."
+                </div>
+            </div>
+        </div>
+
+        <div class="qa-card" onclick="toggleQA(this)">
+            <div class="qa-header">
+                <div class="qa-question">Какая прожарка стейков?</div>
+                <div class="qa-toggle">▼</div>
+            </div>
+            <div class="qa-answer">
+                <p><strong>Стандартная прожарка — medium (средняя).</strong> Но гость может заказать любую:</p>
+                <ul style="margin:8px 0 8px 16px;">
+                    <li><strong>Rare (кровавая)</strong> — холодный красный центр, 48-52°C</li>
+                    <li><strong>Medium Rare (с кровью)</strong> — тёплый красный центр, 52-57°C. <em>Самая популярная у гурманов.</em></li>
+                    <li><strong>Medium (средняя)</strong> — розовый центр, 57-63°C. <em>Стандарт.</em></li>
+                    <li><strong>Medium Well (почти прожаренная)</strong> — слегка розовый центр, 63-68°C</li>
+                    <li><strong>Well Done (прожаренная)</strong> — серый центр, 71°C+</li>
+                </ul>
+                <div class="tip-box" style="margin-top:12px;">
+                    💡 <strong>Совет официанту:</strong> "Для Рибай рекомендую Medium Rare — жир прожарки тает, мясо сочное. Для Филе Миньон — Medium, он постный и на Rare может быть жёстким."
+                </div>
+            </div>
+        </div>
+
+        <div class="qa-card" onclick="toggleQA(this)">
+            <div class="qa-header">
+                <div class="qa-question">Что порекомендовать компании (4-6 человек)?</div>
+                <div class="qa-toggle">▼</div>
+            </div>
+            <div class="qa-answer">
+                <p><strong>Для компании — мангал и сковородки.</strong> Большие порции, делятся, создают атмосферу.</p>
+                <div style="margin-top:10px; font-size:11px; color:var(--text-muted); margin-bottom:6px;">Идеальные варианты:</div>
+                <div class="qa-dishes">
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('сковорода дача')">🔥 Сковорода Дача</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('жаренная сковородка')">🔥 Жаренная сковородка</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('свиные ребра барбекю')">🍖 Свиные ребра барбекю</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('каре барашка')">🍖 Каре барашка</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('шашлык из куриного бедра')">🍗 Шашлык из куриного бедра</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('шашлык из свиной шеи')">🍖 Шашлык из свиной шеи</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('пицца (2-3 шт на компанию')">🍕 Пицца (2-3 шт на компанию)</span>
+                </div>
+                <div class="tip-box" style="margin-top:12px; background:rgba(96,165,250,0.1); border-left:3px solid var(--status-blue); padding:10px 12px; border-radius:0 8px 8px 0;">
+                    💡 <strong>Совет официанту:</strong> "На компанию из 4 человек рекомендую Сковороду Дача + 2 пиццы + салат. Всё делится, разные вкусы, и выходит выгодно."
+                </div>
+            </div>
+        </div>
+
+        <div class="qa-card" onclick="toggleQA(this)">
+            <div class="qa-header">
+                <div class="qa-question">Что подходит к пиву?</div>
+                <div class="qa-toggle">▼</div>
+            </div>
+            <div class="qa-answer">
+                <p><strong>К пиву — мангал, закуски, острое.</strong> Хрустящее, солёное, жирное — идеальные компаньоны.</p>
+                <div style="margin-top:10px; font-size:11px; color:var(--text-muted); margin-bottom:6px;">К пиву:</div>
+                <div class="qa-dishes">
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('колбаски куриные')">🍖 Колбаски куриные</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('колбаски свиные')">🍖 Колбаски свиные</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('шашлык')">🍗 Шашлык</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('свиные ребра барбекю')">🍖 Свиные ребра барбекю</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('креветки в темпуре')">🦐 Креветки в темпуре</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('гренки с айоле')">🍽 Гренки с айоле</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('тар-тар из говядины')">🥩 Тар-тар из говядины</span>
+                    <span class="qa-dish-chip" onclick="event.stopPropagation(); navigateToDish('сковорода дача')">🔥 Сковорода Дача</span>
+                </div>
+                <div class="tip-box" style="margin-top:12px;">
+                    💡 <strong>Совет официанту:</strong> "К светлому пиву — креветки в темпуре или гренки. К тёмному — ребра барбекю или колбаски."
+                </div>
+            </div>
+        </div>
+
+        <div class="qa-card" onclick="toggleQA(this)">
+            <div class="qa-header">
+                <div class="qa-question">В чём разница между стейками?</div>
+                <div class="qa-toggle">▼</div>
+            </div>
+            <div class="qa-answer">
+                <p><strong>Рибай (Ribeye)</strong> — толстый край, мраморный, с жировой прожилкой. Самый сочный и ароматный. Для тех, кто любит насыщенный вкус.<br><br>
+                <strong>Филе Миньон (Tenderloin)</strong> — вырезка, самое нежное мясо, почти без жира. Для тех, кто ценит текстуру.<br><br>
+                <strong>Стриплойн (Striploin)</strong> — тонкий край, баланс мяса и жира. Универсальный выбор.<br><br>
+                <strong>Пиканья (Picanha)</strong> — бразильский хит, крышка бедра, с толстым жировым слоем. Сочный, с характером.<br><br>
+                <strong>Скерт (Skirt)</strong> — диафрагма, плотное мясо с выраженным вкусом. Быстро готовится, идеально Medium Rare.</p>
+                <div class="tip-box" style="margin-top:12px;">
+                    💡 <strong>Совет официанту:</strong> "Если первый раз — берите Рибай, он прощает ошибки прожарки. Если знаете толк — Пиканья или Скерт для эксперимента."
+                </div>
+            </div>
+        </div>
   </main>
 
   <main class="content knowledge-section" id="knowledgeContent">
-    <div class="category-title" style="margin-top:0;">📚 Знания — для официантов</div>
-    <div class="knowledge-card" onclick="toggleKnowledge(this)">
-      <div class="knowledge-header"><div class="knowledge-title">🥩 Стейки: виды и особенности</div><div class="knowledge-toggle">▼</div></div>
-      <div class="knowledge-content">
-        <h4>Рибай (Ribeye)</h4>
-        <ul><li>Мраморная говядина с жировой прожилкой</li><li>Самый <span class="highlight">сочный и ароматный</span> стейк</li><li>Идеальная прожарка: <span class="highlight">Medium Rare — Medium</span></li></ul>
-        <div class="pairing-box">🍷 <strong>Пейринг:</strong> Каберне Совиньон, Мерло</div>
-        <div class="tip-box">📌 <strong>Правило:</strong> Все стейки отдыхают 3-5 минут после жарки.</div>
-      </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div class="category-title" style="margin-top:0;">📚 Знания — для официантов</div>
+      <button class="admin-btn" id="addKnowledgeBtn" style="display:none;" onclick="event.stopPropagation();addNewKnowledge()">➕ Добавить знание</button>
     </div>
+<div class="category-title" style="margin-top:0;">📚 Знания — для официантов</div>
+
+        <div class="knowledge-card" onclick="toggleKnowledge(this)">
+            <div class="knowledge-header">
+                <div class="knowledge-title">🥩 Стейки: виды и особенности</div>
+                <div class="knowledge-toggle">▼</div>
+            </div>
+            <div class="knowledge-content">
+                <h4>Рибай (Ribeye) — толстый край</h4>
+                <ul>
+                    <li>Мраморная говядина с жировой прожилкой по центру</li>
+                    <li>Самый <span class="highlight">сочный и ароматный</span> стейк — жир таёт при жарке</li>
+                    <li>Идеальная прожарка: <span class="highlight">Medium Rare — Medium</span></li>
+                    <li>Вес: 180-191г | Время: 15-20 мин</li>
+                    <li>Подаётся с чесноком, розмарином, сливочным маслом</li>
+                </ul>
+                <div class="pairing-box">
+                    🍷 <strong>Пейринг:</strong> Каберне Совиньон, Мерло, Сира. Танины балансируют жирность.
+                </div>
+
+                <h4>Филе Миньон (Tenderloin) — вырезка</h4>
+                <ul>
+                    <li>Самое <span class="highlight">нежное мясо</span> — мышца не работает</li>
+                    <li>Почти без жира, очень мягкая текстура</li>
+                    <li>Идеальная прожарка: <span class="highlight">Medium</span> (на Rare может быть жёстким)</li>
+                    <li>Вес: 196г | Время: 15-20 мин</li>
+                </ul>
+                <div class="pairing-box">
+                    🍷 <strong>Пейринг:</strong> Пино Нуар, лёгкое Бордо. Не перебивает нежный вкус.
+                </div>
+
+                <h4>Стриплойн (Striploin) — тонкий край</h4>
+                <ul>
+                    <li>Баланс мяса и жира — <span class="highlight">универсальный выбор</span></li>
+                    <li>Плотная текстура, насыщенный вкус</li>
+                    <li>Идеальная прожарка: <span class="highlight">Medium Rare — Medium</span></li>
+                    <li>Вес: 200г | Время: 15-20 мин</li>
+                </ul>
+
+                <h4>Пиканья (Picanha) — крышка бедра</h4>
+                <ul>
+                    <li>Бразильская классика — <span class="highlight">круглый кусок с толстым жировым слоем</span></li>
+                    <li>Жир снаружи, мясо внутри — при жарке жир пропитывает мясо</li>
+                    <li>Идеальная прожарка: <span class="highlight">Medium Rare</span></li>
+                    <li>Вес: 160г | Время: 15-20 мин</li>
+                </ul>
+
+                <h4>Скерт (Skirt) — диафрагма</h4>
+                <ul>
+                    <li>Плотное, <span class="highlight">выраженный вкус</span> — мясной "характер"</li>
+                    <li>Быстро готовится, нельзя пережарить</li>
+                    <li>Идеальная прожарка: <span class="highlight">Medium Rare</span> (иначе жёсткий)</li>
+                    <li>Вес: 142г | Время: 15-20 мин</li>
+                </ul>
+
+                <div class="tip-box">
+                    📌 <strong>Ключевое правило:</strong> Все стейки отдыхают 3-5 минут после жарки — соки распределяются. Резать сразу = сухое мясо.
+                </div>
+            </div>
+        </div>
+
+        <div class="knowledge-card" onclick="toggleKnowledge(this)">
+            <div class="knowledge-header">
+                <div class="knowledge-title">🐄 Мираторг: о производителе</div>
+                <div class="knowledge-toggle">▼</div>
+            </div>
+            <div class="knowledge-content">
+                <p><strong>Мираторг</strong> — крупнейший производитель мраморной говядины в России. Особенности:</p>
+                <ul>
+                    <li><span class="highlight">Порода:</span> Aberdeen Angus — чёрный ангус, премиальная мясная порода</li>
+                    <li><span class="highlight">Кормление:</span> зерновое откормление 200+ дней — формирует мраморность</li>
+                    <li><span class="highlight">Выдержка (Dry Aging):</span> мясо созревает в холодильнике 21-28 дней — концентрация вкуса</li>
+                    <li><span class="highlight">Мраморность:</span> от 3 до 6 баллов (по японской шкале BMS)</li>
+                </ul>
+                <h4>Что такое мраморность?</h4>
+                <p>Мраморность — это внутримышечный жир (не подкожный). Чем выше — тем:</p>
+                <ul>
+                    <li>✓ Сочнее мясо</li>
+                    <li>✓ Мягче текстура</li>
+                    <li>✓ Насыщеннее вкус</li>
+                    <li>✓ Быстрее готовится</li>
+                </ul>
+                <div class="tip-box">
+                    📌 <strong>Для гостя:</strong> "Наши стейки — от Мираторг, мраморная говядина породы Ангус. Мясо выдерживается 21 день, поэтому оно такое сочное и ароматное."
+                </div>
+            </div>
+        </div>
+
+        <div class="knowledge-card" onclick="toggleKnowledge(this)">
+            <div class="knowledge-header">
+                <div class="knowledge-title">🔥 Мангал: что важно знать</div>
+                <div class="knowledge-toggle">▼</div>
+            </div>
+            <div class="knowledge-content">
+                <h4>Шашлык из свиной шеи</h4>
+                <ul>
+                    <li>Шея — <span class="highlight">самая сочная часть</span> свинины для шашлыка</li>
+                    <li>Много межмышечного жира — не высыхает на огне</li>
+                    <li>Подаётся с лавашом, маринованным луком, зеленью</li>
+                    <li>Вес: 252г | Время: 10-15 мин</li>
+                </ul>
+
+                <h4>Шашлык из куриного бедра</h4>
+                <ul>
+                    <li>Бедро сочнее грудки — <span class="highlight">не пересыхает</span></li>
+                    <li>Мягкое, нежное мясо с дымком</li>
+                    <li>Вес: 256г | Время: 10-15 мин</li>
+                </ul>
+
+                <h4>Каре барашка</h4>
+                <ul>
+                    <li>Молодой баран — <span class="highlight">нежное, без специфического запаха</span></li>
+                    <li>Подаётся с черри, кинзой, лавашем, бальзамиком</li>
+                    <li>Восточный акцент — рекомендуй к красному вину</li>
+                    <li>Вес: 373г | Время: 10-15 мин</li>
+                </ul>
+
+                <h4>Колбаски (куриные / свиные)</h4>
+                <ul>
+                    <li><span class="highlight">Наши рецепты</span> — рубленые, не фаршевые</li>
+                    <li>Хрустящая оболочка, сочная начинка</li>
+                    <li>Подаются с квашеной капустой, маринованными огурцами, лавашем</li>
+                    <li>Свиные острее куриных — уточняйте предпочтения гостя</li>
+                </ul>
+
+                <h4>Бургер классический</h4>
+                <ul>
+                    <li>Котлета из <span class="highlight">говядины</span> (не свино-говяжья)</li>
+                    <li>Булочка бриошь — сладковатая, мягкая</li>
+                    <li>Сыр чеддер, айсберг, красный лук</li>
+                    <li>Вес: 320г | Время: 10-15 мин</li>
+                </ul>
+
+                <div class="tip-box">
+                    📌 <strong>Ключевое правило мангала:</strong> Всё готовится на углях, не на газе. Дымок — это фишка, не дефект. Если гость жалуется на дымный запах — объясни, что это "вкус мангала".
+                </div>
+            </div>
+        </div>
+
+        <div class="knowledge-card" onclick="toggleKnowledge(this)">
+            <div class="knowledge-header">
+                <div class="knowledge-title">🍝 Соусы: гид для официанта</div>
+                <div class="knowledge-toggle">▼</div>
+            </div>
+            <div class="knowledge-content">
+                <h4>Цезарь</h4>
+                <ul>
+                    <li>База: <span class="highlight">яйцо + пармезан + анчоусы + оливковое масло + лимон</span></li>
+                    <li>Вкус: насыщенный, умами, слегка рыбный (от анчоусов)</li>
+                    <li>Где используется: Салат Цезарь, Пицца Цезарь</li>
+                    <li>Аллергены: лактоза, яйца, рыба (анчоусы)</li>
+                </ul>
+
+                <h4>Бешамель</h4>
+                <ul>
+                    <li>База: <span class="highlight">сливки + молоко + сливочное масло + мука</span></li>
+                    <li>Вкус: нежный, сливочный, универсальный</li>
+                    <li>Где используется: Пицца Гарганзола, Пицца Дачная, Пицца Морской коктейль, Запечённые креветки</li>
+                    <li>Аллергены: лактоза, глютен</li>
+                </ul>
+
+                <h4>Томатный (пицца-соус)</h4>
+                <ul>
+                    <li>База: <span class="highlight">томаты + чеснок + базилик + орегано</span></li>
+                    <li>Вкус: кисло-сладкий, ароматный, классический</li>
+                    <li>Где используется: Пицца Брянская, Пицца пепперони, Пицца со страчателлой</li>
+                    <li>Аллергены: нет (веган)</li>
+                </ul>
+
+                <h4>Терияки</h4>
+                <ul>
+                    <li>База: <span class="highlight">соевый соус + мёд/сахар + имбирь + чеснок</span></li>
+                    <li>Вкус: сладко-солёный, глянцевый, азиатский</li>
+                    <li>Где используется: Курица терияки, Тар-тар из говядины</li>
+                    <li>Аллергены: соя, мёд</li>
+                </ul>
+
+                <h4>Сладкий чили</h4>
+                <ul>
+                    <li>База: <span class="highlight">чили + сахар + уксус + чеснок</span></li>
+                    <li>Вкус: сладко-острый, тягучий</li>
+                    <li>Где используется: Креветки в темпуре, Тайский салат</li>
+                    <li>Аллергены: острое</li>
+                </ul>
+
+                <h4>Ореховый</h4>
+                <ul>
+                    <li>База: <span class="highlight">грецкие орехи + чеснок + зелень + масло</span></li>
+                    <li>Вкус: насыщенный, ореховый, ароматный</li>
+                    <li>Где используется: Салат с ростбифом, Стейк-салат</li>
+                    <li>Аллергены: орехи</li>
+                </ul>
+
+                <div class="tip-box">
+                    📌 <strong>Совет:</strong> Если гость просит соус отдельно — это нормально. Уточни у кухни, можно ли. Бешамель и цезарь — сложные в приготовлении, томатный и терияки — проще.
+                </div>
+            </div>
+        </div>
+
+        <div class="knowledge-card" onclick="toggleKnowledge(this)">
+            <div class="knowledge-header">
+                <div class="knowledge-title">🐟 Рыба и морепродукты</div>
+                <div class="knowledge-toggle">▼</div>
+            </div>
+            <div class="knowledge-content">
+                <h4>Стейк лосося (Сёмга)</h4>
+                <ul>
+                    <li>Филе с кожей — <span class="highlight">кожа хрустит, мясо нежное</span></li>
+                    <li>Маслянистая рыба, богата Омега-3</li>
+                    <li>Подаётся с лимоном</li>
+                    <li>Вес: 198г | Время: 15-20 мин</li>
+                </ul>
+                <div class="pairing-box">
+                    🥂 <strong>Пейринг:</strong> Совиньон Блан, Шардоне, Пино Гриджо. Кислотность вина балансирует жирность рыбы.
+                </div>
+
+                <h4>Тунец (стейк)</h4>
+                <ul>
+                    <li>Свежий тунец — <span class="highlight">"рыбный стейк"</span></li>
+                    <li>Мясо плотное, почти как говядина (цвет тёмно-красный)</li>
+                    <li>Подаётся с белой киноа и сливочным соусом</li>
+                    <li>Вес: 361г | Время: 15-20 мин</li>
+                </ul>
+
+                <h4>Креветки</h4>
+                <ul>
+                    <li><span class="highlight">Тигровые 16/20</span> — крупные, 16-20 шт на фунт (≈450г)</li>
+                    <li>В темпуре — хрустящие, в салате — нежные</li>
+                    <li>Аллерген: морепродукты (часто крест-аллергия с ракообразными)</li>
+                </ul>
+
+                <h4>Мидии</h4>
+                <ul>
+                    <li>В раковинах — <span class="highlight">проверяйте, все ли открылись</span> (закрытые = испорченные)</li>
+                    <li>В чаудере — судак, бекон, сельдерей, сливки</li>
+                    <li>Аллерген: морепродукты</li>
+                </ul>
+
+                <div class="tip-box">
+                    📌 <strong>Совет:</strong> Если гость заказывает рыбу — уточни, любит ли он лимон. Некоторые предпочитают без. Лосось и тунец — дорогие позиции, всегда уточняй прожарку (для тунца — Rare/Medium Rare).
+                </div>
+            </div>
+        </div>
+
+        <div class="knowledge-card" onclick="toggleKnowledge(this)">
+            <div class="knowledge-header">
+                <div class="knowledge-title">🗣️ Скрипты продаж</div>
+                <div class="knowledge-toggle">▼</div>
+            </div>
+            <div class="knowledge-content">
+                <h4>Как предложить стейк</h4>
+                <div class="tip-box">
+                    ❌ "У нас есть стейки."<br>
+                    ✅ "Наш шеф рекомендует Рибай — мраморная говядина от Мираторг, выдержана 21 день. Сочный, с насыщенным вкусом. На Medium Rare — идеально."
+                </div>
+
+                <h4>Как предложить вино</h4>
+                <div class="tip-box">
+                    ❌ "Какое вино хотите?"<br>
+                    ✅ "К стейку Рибай отлично подойдёт Каберне Совиньон — танины обрежут жирность мяса. Или могу предложить нашего Мерло — мягче, если предпочитаете не такое танинное."
+                </div>
+
+                <h4>Как обработать возражение "дорого"</h4>
+                <div class="tip-box">
+                    ❌ "Ну, это стейк."<br>
+                    ✅ "Рибай — премиальная часть говядины, мраморная, выдержанная. Это как сравнивать обычное вино и бордо — разные уровни. Но если хотите что-то попроще — рекомендую Пиканья или Бургер, тоже отличные."
+                </div>
+
+                <h4>Как предложить десерт</h4>
+                <div class="tip-box">
+                    ❌ "Десерт будете?"<br>
+                    ✅ "У нас фирменное мороженое с топпингами на выбор. После стейка — отличное завершение. Или могу предложить вареники с вишней — тёплые, с сметаной."
+                </div>
+
+                <h4>Как работать с аллергиями</h4>
+                <div class="tip-box">
+                    ⚠️ <strong>Всегда уточняй:</strong><br>
+                    1. "Что именно исключаем?" (не все "без глютена" одинаковы)<br>
+                    2. "Насколько строго?" (трассировка или просто состав)<br>
+                    3. Сообщи кухне — напиши на чеке или передай шефу лично<br>
+                    4. Не гадай. Если не уверен — скажи "Уточню у кухни".
+                </div>
+            </div>
+        </div>
   </main>
 
   <nav class="bottom-nav">
@@ -985,6 +1554,13 @@ function applyRolePermissions() {
   for (var i = 0; i < chefOnly.length; i++) {
     chefOnly[i].style.display = isChef ? 'inline-flex' : 'none';
   }
+  // Show/hide add buttons
+  var addDishContainer = document.getElementById('addDishContainer');
+  var addQABtn = document.getElementById('addQABtn');
+  var addKnowledgeBtn = document.getElementById('addKnowledgeBtn');
+  if (addDishContainer) addDishContainer.style.display = isStaff ? 'block' : 'none';
+  if (addQABtn) addQABtn.style.display = isStaff ? 'inline-block' : 'none';
+  if (addKnowledgeBtn) addKnowledgeBtn.style.display = isStaff ? 'inline-block' : 'none';
   var roleLabel = isChef ? ' | Шеф' : isAdmin ? ' | Админ' : ' | Официант';
   var vt = document.getElementById('versionText');
   if (vt) vt.textContent = menuData.length + ' позиций | Знания | Вопросы' + roleLabel;
@@ -1078,6 +1654,9 @@ function openModal(title, fields, callback) {
   document.getElementById('modalTitle').textContent = title;
   var body = document.getElementById('modalBody');
   body.innerHTML = fields.map(function(f) {
+    if (f.type === 'textarea') {
+      return '<div class="modal-field"><label>' + f.label + '</label><textarea class="modal-input" id="modal-' + f.id + '" placeholder="' + (f.placeholder || '') + '" style="min-height:120px;resize:vertical;">' + (f.value || '') + '</textarea></div>';
+    }
     return '<div class="modal-field"><label>' + f.label + '</label><input type="' + (f.type || 'text') + '" class="modal-input" id="modal-' + f.id + '" value="' + (f.value || '') + '" placeholder="' + (f.placeholder || '') + '"></div>';
   }).join('');
   modalCallback = callback;
@@ -1363,6 +1942,108 @@ function navigateToDish(dishName) {
 
 checkAutoLogin();
 if (!currentUser) selectRole('chef');
+
+
+// ==================== ADD NEW ITEMS ====================
+function addNewDish() {
+  openModal('Добавить новое блюдо', [
+    { id: 'id', label: 'Номер ТК', placeholder: 'Например: 02199' },
+    { id: 'category', label: 'Категория', placeholder: 'Салаты, Супы, Горячее...' },
+    { id: 'name', label: 'Название', placeholder: 'Название блюда' },
+    { id: 'weight', label: 'Вес', placeholder: 'Например: 250г' },
+    { id: 'time', label: 'Время приготовления', placeholder: 'Например: 10-15 мин' },
+    { id: 'description', label: 'Описание для гостя', placeholder: 'Описание...' },
+    { id: 'ingredients', label: 'Ключевые ингредиенты', placeholder: 'Ингредиенты через запятую...' },
+    { id: 'icon', label: 'Иконка (эмодзи)', value: '🍽', placeholder: '🍽' },
+    { id: 'allergens', label: 'Аллергены (через запятую)', placeholder: 'лактоза,глютен,орехи...' },
+    { id: 'vegetarian', label: 'Вегетарианское (да/нет)', value: 'нет', placeholder: 'да или нет' }
+  ], function(values) {
+    var newDish = {
+      id: values.id || String(Date.now()).slice(-5),
+      category: values.category || 'Горячее',
+      name: values.name || 'Новое блюдо',
+      weight: values.weight || '200г',
+      time: values.time || '10-15 мин',
+      allergens: values.allergens ? values.allergens.split(',').map(function(a){return a.trim();}).filter(function(a){return a;}) : [],
+      vegetarian: values.vegetarian && values.vegetarian.toLowerCase() === 'да',
+      icon: values.icon || '🍽',
+      description: values.description || '',
+      ingredients: values.ingredients || '',
+      price: '',
+      photo: ''
+    };
+    // Auto-detect allergens from ingredients
+    var auto = detectAllergens(newDish.ingredients);
+    auto.forEach(function(a) {
+      if (newDish.allergens.indexOf(a) === -1) newDish.allergens.push(a);
+    });
+    menuData.push(newDish);
+    saveDishToFirebase(newDish.id, {
+      category: newDish.category,
+      name: newDish.name,
+      weight: newDish.weight,
+      time: newDish.time,
+      allergens: newDish.allergens,
+      vegetarian: newDish.vegetarian,
+      icon: newDish.icon,
+      description: newDish.description,
+      ingredients: newDish.ingredients,
+      price: '',
+      photo: ''
+    });
+    renderMenu();
+    applyRolePermissions();
+    alert('Блюдо добавлено: ' + newDish.name);
+  });
+}
+
+function addNewQA() {
+  openModal('Добавить вопрос гостя', [
+    { id: 'question', label: 'Вопрос', placeholder: 'Например: Что подходит к вину?' },
+    { id: 'answer', label: 'Ответ (HTML)', placeholder: '<p>Ответ...</p>', type: 'textarea' }
+  ], function(values) {
+    if (!values.question) { alert('Введите вопрос'); return; }
+    var container = document.getElementById('qaContent');
+    var newCard = document.createElement('div');
+    newCard.className = 'qa-card';
+    newCard.setAttribute('onclick', 'toggleQA(this)');
+    newCard.innerHTML = '<div class="qa-header"><div class="qa-question">' + escapeHtml(values.question) + '</div><div class="qa-toggle">▼</div></div><div class="qa-answer">' + (values.answer || '<p>Ответ пока не заполнен</p>') + '</div>';
+    container.appendChild(newCard);
+    // Save to Firebase
+    if (db) {
+      var qaId = 'qa_' + Date.now();
+      db.ref('qa/' + qaId).set({ question: values.question, answer: values.answer || '' });
+    }
+    alert('Вопрос добавлен');
+  });
+}
+
+function addNewKnowledge() {
+  openModal('Добавить знание', [
+    { id: 'title', label: 'Заголовок', placeholder: 'Например: 🍝 Паста: виды и соусы' },
+    { id: 'content', label: 'Содержание (HTML)', placeholder: '<h4>Заголовок</h4><ul><li>Пункт 1</li></ul>', type: 'textarea' }
+  ], function(values) {
+    if (!values.title) { alert('Введите заголовок'); return; }
+    var container = document.getElementById('knowledgeContent');
+    var newCard = document.createElement('div');
+    newCard.className = 'knowledge-card';
+    newCard.setAttribute('onclick', 'toggleKnowledge(this)');
+    newCard.innerHTML = '<div class="knowledge-header"><div class="knowledge-title">' + escapeHtml(values.title) + '</div><div class="knowledge-toggle">▼</div></div><div class="knowledge-content">' + (values.content || '<p>Содержание пока не заполнено</p>') + '</div>';
+    container.appendChild(newCard);
+    // Save to Firebase
+    if (db) {
+      var knId = 'kn_' + Date.now();
+      db.ref('knowledge/' + knId).set({ title: values.title, content: values.content || '' });
+    }
+    alert('Знание добавлено');
+  });
+}
+
+function escapeHtml(text) {
+  var div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
 </script>
 </body>
 </html>
