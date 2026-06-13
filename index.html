@@ -2138,6 +2138,154 @@ function addNewKnowledge() {
   });
 }
 
+function getCleanInnerHTML(element) {
+  var clone = element.cloneNode(true);
+  var allElements = clone.querySelectorAll('*');
+  for (var i = 0; i < allElements.length; i++) {
+    allElements[i].removeAttribute('onclick');
+    allElements[i].removeAttribute('onchange');
+    allElements[i].removeAttribute('onkeyup');
+    allElements[i].removeAttribute('onkeydown');
+    allElements[i].removeAttribute('onfocus');
+    allElements[i].removeAttribute('onblur');
+  }
+  var adminControls = clone.querySelectorAll('.admin-controls');
+  for (var i = adminControls.length - 1; i >= 0; i--) {
+    adminControls[i].parentNode.removeChild(adminControls[i]);
+  }
+  return clone.innerHTML.trim();
+}
+
+function htmlToEditText(html) {
+  var div = document.createElement('div');
+  div.innerHTML = html;
+
+  // Remove admin-controls if any remain
+  var adminControls = div.querySelectorAll('.admin-controls');
+  for (var i = adminControls.length - 1; i >= 0; i--) {
+    adminControls[i].parentNode.removeChild(adminControls[i]);
+  }
+
+  // Convert qa-dishes to simple bullet list
+  var qaDishes = div.querySelectorAll('.qa-dishes');
+  for (var i = qaDishes.length - 1; i >= 0; i--) {
+    var chips = qaDishes[i].querySelectorAll('.qa-dish-chip');
+    var listText = [];
+    for (var j = 0; j < chips.length; j++) {
+      listText.push('- ' + chips[j].textContent.trim());
+    }
+    var p = document.createElement('p');
+    p.textContent = listText.join('\n');
+    qaDishes[i].parentNode.replaceChild(p, qaDishes[i]);
+  }
+
+  // Convert tip-box to simple text
+  var tipBoxes = div.querySelectorAll('.tip-box');
+  for (var i = tipBoxes.length - 1; i >= 0; i--) {
+    var p = document.createElement('p');
+    p.textContent = '💡 ' + tipBoxes[i].textContent.trim();
+    tipBoxes[i].parentNode.replaceChild(p, tipBoxes[i]);
+  }
+
+  // Now walk the DOM and build plain text
+  return domToPlainText(div);
+}
+
+function domToPlainText(container) {
+  var result = [];
+  var children = container.childNodes;
+
+  for (var i = 0; i < children.length; i++) {
+    var node = children[i];
+
+    if (node.nodeType === Node.TEXT_NODE) {
+      var text = node.textContent.trim();
+      if (text) result.push(text);
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      var tag = node.tagName.toLowerCase();
+
+      if (tag === 'br') {
+        result.push('\n');
+      } else if (tag === 'hr') {
+        result.push('\n---\n');
+      } else if (tag === 'li') {
+        var text = getNodeText(node);
+        if (text) result.push('- ' + text);
+      } else if (tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'h4') {
+        var text = getNodeText(node);
+        if (text) result.push('**' + text + '**');
+      } else if (tag === 'strong' || tag === 'b') {
+        var text = getNodeText(node);
+        if (text) result.push('**' + text + '**');
+      } else if (tag === 'em' || tag === 'i') {
+        var text = getNodeText(node);
+        if (text) result.push('*' + text + '*');
+      } else if (tag === 'ul' || tag === 'ol') {
+        var items = node.querySelectorAll(':scope > li');
+        for (var j = 0; j < items.length; j++) {
+          var itemText = getNodeText(items[j]);
+          if (itemText) result.push('- ' + itemText);
+        }
+      } else if (tag === 'p' || tag === 'div') {
+        var childText = domToPlainText(node);
+        if (childText) result.push(childText);
+      } else {
+        var text = getNodeText(node);
+        if (text) result.push(text);
+      }
+    }
+  }
+
+  return result.join('\n').replace(/\n\n\n+/g, '\n\n').trim();
+}
+
+function getNodeText(node) {
+  return (node.textContent || node.innerText || '').trim();
+}
+
+function editTextToHtml(text) {
+  if (!text) return '';
+
+  var paragraphs = text.split(/\n\n+/);
+  var html = '';
+
+  for (var i = 0; i < paragraphs.length; i++) {
+    var p = paragraphs[i].trim();
+    if (!p) continue;
+
+    // Check if paragraph is a list
+    var lines = p.split('\n');
+    var isList = true;
+    var listItems = [];
+
+    for (var j = 0; j < lines.length; j++) {
+      var line = lines[j].trim();
+      if (!line) continue;
+      if (!line.match(/^[-\u2022]\s/)) {
+        isList = false;
+        break;
+      }
+      listItems.push(line.replace(/^[-\u2022]\s*/, ''));
+    }
+
+    if (isList && listItems.length > 0) {
+      html += '<ul>';
+      for (var j = 0; j < listItems.length; j++) {
+        html += '<li>' + escapeHtml(listItems[j]) + '</li>';
+      }
+      html += '</ul>';
+    } else {
+      p = escapeHtml(p);
+      p = p.replace(/\n/g, '<br>');
+      p = p.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      p = p.replace(/\*(.+?)\*/g, '<em>$1</em>');
+      html += '<p>' + p + '</p>';
+    }
+  }
+
+  return html;
+}
+
 function editQA(btn) {
   var card = btn.closest('.qa-card');
   if (!card) return;
@@ -2146,13 +2294,13 @@ function editQA(btn) {
   var answer = card.querySelector('.qa-answer');
   if (!question || !answer) return;
   var currentQ = question.textContent.trim();
-  var currentA = answer.innerHTML.trim();
+  var currentA = htmlToEditText(getCleanInnerHTML(answer));
   openModal('Редактировать вопрос', [
     { id: 'question', label: 'Вопрос', value: currentQ },
-    { id: 'answer', label: 'Ответ (HTML)', value: currentA, type: 'textarea' }
+    { id: 'answer', label: 'Ответ (текст)', value: currentA, type: 'textarea' }
   ], function(values) {
     if (values.question) question.textContent = values.question;
-    if (values.answer) answer.innerHTML = values.answer;
+    if (values.answer) answer.innerHTML = editTextToHtml(values.answer);
     if (db && qaId) {
       db.ref('qa/' + qaId).update({ question: values.question || currentQ, answer: values.answer || currentA });
     }
@@ -2180,13 +2328,13 @@ function editKnowledge(btn) {
   var content = card.querySelector('.knowledge-content');
   if (!title || !content) return;
   var currentT = title.textContent.trim();
-  var currentC = content.innerHTML.trim();
+  var currentC = htmlToEditText(getCleanInnerHTML(content));
   openModal('Редактировать знание', [
     { id: 'title', label: 'Заголовок', value: currentT },
-    { id: 'content', label: 'Содержание (HTML)', value: currentC, type: 'textarea' }
+    { id: 'content', label: 'Содержание (текст)', value: currentC, type: 'textarea' }
   ], function(values) {
     if (values.title) title.textContent = values.title;
-    if (values.content) content.innerHTML = values.content;
+    if (values.content) content.innerHTML = editTextToHtml(values.content);
     if (db && knId) {
       db.ref('knowledge/' + knId).update({ title: values.title || currentT, content: values.content || currentC });
     }
