@@ -9,28 +9,28 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
 :root {
-  --bg-primary:#2d1f1f; --bg-secondary:#3d2a2a; --bg-card:#4a3535; --bg-card-hover:#5a4242; --bg-input:#3d2a2a;
-  --accent-primary:#e8a090; --accent-secondary:#d4957a; --accent-soft:#f0c0b0;
-  --text-primary:#f5e6e0; --text-secondary:#b8a8a0; --text-muted:#9a8a82;
-  --border:#6a4a4a; --border-strong:#7a5a5a;
-  --status-green:#a8c4a0; --status-yellow:#e8c090; --status-red:#e8a0a0; --status-blue:#a8b8c8;
-  --shadow:rgba(0,0,0,0.3); --shadow-hover:rgba(0,0,0,0.5);
+  --bg-primary:#0f2e1f; --bg-secondary:#1a3d2a; --bg-card:#244d38; --bg-card-hover:#2e5d44; --bg-input:#1a3d2a;
+  --accent-primary:#34d399; --accent-secondary:#2eb885; --accent-soft:#6ee7b7;
+  --text-primary:#ecfdf5; --text-secondary:#a7f3d0; --text-muted:#6b9b85;
+  --border:#2a5a3e; --border-strong:#3a6e50;
+  --status-green:#34d399; --status-yellow:#fbbf24; --status-red:#f87171; --status-blue:#60a5fa;
+  --shadow:rgba(0,20,10,0.5); --shadow-hover:rgba(0,20,10,0.7);
 }
 body.theme-light {
-  --bg-primary:#faf0eb; --bg-secondary:#f5e6de; --bg-card:#ffffff; --bg-card-hover:#f5ebe5; --bg-input:#f5e6de;
-  --accent-primary:#c97b63; --accent-secondary:#b86a52; --accent-soft:#d4957a;
-  --text-primary:#3d2a2a; --text-secondary:#7a5a5a; --text-muted:#a09088;
-  --border:#e0d0c8; --border-strong:#d0c0b8;
-  --status-green:#6a9a6a; --status-yellow:#c99050; --status-red:#c86060; --status-blue:#6a8aaa;
-  --shadow:rgba(60,30,30,0.08); --shadow-hover:rgba(60,30,30,0.15);
+  --bg-primary:#f5f5f7; --bg-secondary:#e5e5ea; --bg-card:#ffffff; --bg-card-hover:#f2f2f7; --bg-input:#e5e5ea;
+  --accent-primary:#8b5a2b; --accent-secondary:#a67c52; --accent-soft:#c49a6c;
+  --text-primary:#1c1c1e; --text-secondary:#636366; --text-muted:#8e8e93;
+  --border:#d1d1d6; --border-strong:#c7c7cc;
+  --status-green:#248a3d; --status-yellow:#b75c00; --status-red:#d70015; --status-blue:#0071e3;
+  --shadow:rgba(0,0,0,0.08); --shadow-hover:rgba(0,0,0,0.15);
 }
 body.theme-dark {
-  --bg-primary:#1a1a2e; --bg-secondary:#16213e; --bg-card:#1f2a40; --bg-card-hover:#2a3a50; --bg-input:#16213e;
-  --accent-primary:#e8a090; --accent-secondary:#d4957a; --accent-soft:#f0c0b0;
-  --text-primary:#f0e6e0; --text-secondary:#a0a8b8; --text-muted:#7a8290;
-  --border:#3a4a5a; --border-strong:#4a5a6a;
-  --status-green:#8ac490; --status-yellow:#e8c090; --status-red:#e8a0a0; --status-blue:#90a8c0;
-  --shadow:rgba(0,0,0,0.4); --shadow-hover:rgba(0,0,0,0.6);
+  --bg-primary:#0f2e1f; --bg-secondary:#1a3d2a; --bg-card:#244d38; --bg-card-hover:#2e5d44; --bg-input:#1a3d2a;
+  --accent-primary:#34d399; --accent-secondary:#2eb885; --accent-soft:#6ee7b7;
+  --text-primary:#ecfdf5; --text-secondary:#a7f3d0; --text-muted:#6b9b85;
+  --border:#2a5a3e; --border-strong:#3a6e50;
+  --status-green:#34d399; --status-yellow:#fbbf24; --status-red:#f87171; --status-blue:#60a5fa;
+  --shadow:rgba(0,20,10,0.5); --shadow-hover:rgba(0,20,10,0.7);
 }
 body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg-primary); color:var(--text-primary); line-height:1.5; min-height:100vh; overflow-x:hidden; }
 
@@ -1890,9 +1890,9 @@ document.getElementById('knowledgeContent').addEventListener('click', function(e
 });
 
 // ==================== THEME ====================
-const themes = ['', 'theme-light', 'theme-dark'];
-const themeNames = ['Закат', 'Светлая', 'Тёмная'];
-const themeIcons = ['🌅', '☀️', '🌙'];
+const themes = ['theme-dark', 'theme-light'];
+const themeNames = ['Изумруд', 'Светлая'];
+const themeIcons = ['🌿', '☀️'];
 let currentThemeIndex = 0;
 
 function applyTheme(index) {
@@ -1910,6 +1910,11 @@ function initTheme() {
     if (saved) {
       var idx = themes.indexOf(saved);
       if (idx >= 0) { currentThemeIndex = idx; applyTheme(idx); }
+      else {
+        // Migrate from old theme names
+        if (saved === '' || saved === 'theme-dark') { currentThemeIndex = 0; applyTheme(0); }
+        else if (saved === 'theme-light') { currentThemeIndex = 1; applyTheme(1); }
+      }
     }
   } catch(e) {}
 }
