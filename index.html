@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>FetBook v4.0 — Дача (Зал)</title>
+<title>FetBook v4.1 — Дача (Зал)</title>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <style>
@@ -54,7 +54,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .login-hint { font-size:11px; color:var(--text-muted); text-align:center; margin-top:16px; line-height:1.6; }
 .role-icon { font-size:18px; display:block; margin-bottom:2px; }
 
-.user-badge { position:fixed; top:12px; right:12px; z-index:200; background:var(--bg-card); border:1.5px solid var(--border); border-radius:20px; padding:6px 14px; font-size:12px; color:var(--accent-primary); font-weight:600; display:flex; align-items:center; gap:6px; cursor:pointer; transition:all 0.3s; }
+.user-badge { background:var(--bg-card); border:1.5px solid var(--border); border-radius:20px; padding:6px 14px; font-size:12px; color:var(--accent-primary); font-weight:600; display:flex; align-items:center; gap:6px; cursor:pointer; transition:all 0.3s; white-space:nowrap; }
 .user-badge:hover { border-color:var(--accent-primary); background:var(--bg-card-hover); }
 .role-dot { width:8px; height:8px; border-radius:50%; background:var(--status-green); }
 .role-dot.admin { background:var(--status-yellow); }
@@ -194,6 +194,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 #addDishContainer { padding:0 16px 8px 16px; }
 #addQABtn, #addKnowledgeBtn { background:var(--accent-primary); color:#1a1a2e; border-color:var(--accent-primary); font-weight:600; }
 #addQABtn:hover, #addKnowledgeBtn:hover { background:var(--accent-secondary); transform:translateY(-1px); }
+.qa-card .admin-controls, .knowledge-card .admin-controls { display:none; padding:0 16px 12px 16px; }
+.qa-card .admin-controls.visible, .knowledge-card .admin-controls.visible { display:flex !important; gap:8px; flex-wrap:wrap; }
 </style>
 <base target="_blank">
 </head>
@@ -201,7 +203,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 
 <div class="login-screen" id="loginScreen">
   <div class="login-logo">ДАЧА</div>
-  <div class="login-subtitle">FetBook v4.0</div>
+  <div class="login-subtitle">FetBook v4.1</div>
   <div class="login-card">
     <div class="login-title">Выберите роль</div>
     <div class="role-selector">
@@ -226,21 +228,22 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 </div>
 
 <div id="mainApp" style="display:none;">
-  <div class="user-badge" id="userBadge" onclick="logout()">
-    <span class="role-dot" id="roleDot"></span>
-    <span id="userName">Гость</span>
-    <span style="font-size:10px;opacity:0.6;">↻ Выход</span>
-  </div>
-
   <header class="header">
     <div class="header-top">
       <div class="logo">ДАЧА</div>
-      <button class="theme-toggle" id="themeToggle" type="button" onclick="nextTheme()">
-        <span class="theme-icon" id="themeIcon">🌅</span>
-        <span class="theme-label" id="themeLabel">Закат</span>
-      </button>
+      <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+        <button class="theme-toggle" id="themeToggle" type="button" onclick="nextTheme()">
+          <span class="theme-icon" id="themeIcon">🌅</span>
+          <span class="theme-label" id="themeLabel">Закат</span>
+        </button>
+        <div class="user-badge" id="userBadge" onclick="logout()">
+          <span class="role-dot" id="roleDot"></span>
+          <span id="userName">Гость</span>
+          <span style="font-size:10px;opacity:0.6;">↻ Выход</span>
+        </div>
+      </div>
     </div>
-    <div class="subtitle">FetBook v4.0 — Меню для гостей</div>
+    <div class="subtitle">FetBook v4.1 — Меню для гостей</div>
     <div class="version" id="versionText">Загрузка...</div>
   </header>
 
@@ -280,13 +283,12 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
   <main class="content" id="menuContent"></main>
 
   <main class="content qa-section" id="qaContent">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
       <div class="category-title" style="margin-top:0;">❓ Вопросы гостей</div>
       <button class="admin-btn" id="addQABtn" style="display:none;" onclick="event.stopPropagation();addNewQA()">➕ Добавить вопрос</button>
     </div>
-<div class="category-title" style="margin-top:0;">❓ Вопросы гостей</div>
 
-        <div class="qa-card" onclick="toggleQA(this)">
+        <div class="qa-card" data-qa-id="qa_что_быстро_до_10_мин" onclick="toggleQA(this)">
             <div class="qa-header">
                 <div class="qa-question">Что быстро? (до 10 мин)</div>
                 <div class="qa-toggle">▼</div>
@@ -308,11 +310,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
                 </div>
                 <div class="tip-box" style="margin-top:12px; background:rgba(251,191,36,0.1); border-left:3px solid var(--status-yellow); padding:10px 12px; border-radius:0 8px 8px 0;">
                     💡 <strong>Совет официанту:</strong> Если гость спешит — предложи салат + закуску. Комбо выходит быстрее, чем одно горячее.
-                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
             </div>
         </div>
+        </div>
 
-        <div class="qa-card" onclick="toggleQA(this)">
+        <div class="qa-card" data-qa-id="qa_что_лёгкое_низкая_калорийность" onclick="toggleQA(this)">
             <div class="qa-header">
                 <div class="qa-question">Что лёгкое? (низкая калорийность)</div>
                 <div class="qa-toggle">▼</div>
@@ -333,11 +339,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
                 </div>
                 <div class="tip-box" style="margin-top:12px; background:rgba(52,211,153,0.1); border-left:3px solid var(--status-green); padding:10px 12px; border-radius:0 8px 8px 0;">
                     💡 <strong>Совет официанту:</strong> "Если хотите совсем лёгкое — возьмите Салат Дача Новый или Уха. Если после салата захочется чего-то более сытного — можно добавить рыбу или пасту."
-                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
             </div>
         </div>
+        </div>
 
-        <div class="qa-card" onclick="toggleQA(this)">
+        <div class="qa-card" data-qa-id="qa_что_подходит_к_вину" onclick="toggleQA(this)">
             <div class="qa-header">
                 <div class="qa-question">Что подходит к вину?</div>
                 <div class="qa-toggle">▼</div>
@@ -359,11 +369,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
                 </div>
                 <div class="tip-box" style="margin-top:12px; background:rgba(167,139,250,0.1); border-left:3px solid var(--status-purple); padding:10px 12px; border-radius:0 8px 8px 0;">
                     💡 <strong>Совет официанту:</strong> "К вашему вину отлично подойдёт..." — всегда начинай с конкретного блюда, а не с общего списка. Гость ценит уверенность.
-                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
             </div>
         </div>
+        </div>
 
-        <div class="qa-card" onclick="toggleQA(this)">
+        <div class="qa-card" data-qa-id="qa_что_для_детей_312_лет" onclick="toggleQA(this)">
             <div class="qa-header">
                 <div class="qa-question">Что для детей? (3-12 лет)</div>
                 <div class="qa-toggle">▼</div>
@@ -381,11 +395,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
                 </div>
                 <div class="tip-box" style="margin-top:12px; background:rgba(249,168,212,0.1); border-left:3px solid #f9a8d4; padding:10px 12px; border-radius:0 8px 8px 0;">
                     💡 <strong>Совет официанту:</strong> "Для ребёнка рекомендую Совёнок — там и картофельное пюре, и наггетсы, и овощи. Всё в одном блюде, ребёнок не устанет ждать."
-                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
             </div>
         </div>
+        </div>
 
-        <div class="qa-card" onclick="toggleQA(this)">
+        <div class="qa-card" data-qa-id="qa_что_острое" onclick="toggleQA(this)">
             <div class="qa-header">
                 <div class="qa-question">Что острое?</div>
                 <div class="qa-toggle">▼</div>
@@ -406,11 +424,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
                 </div>
                 <div class="tip-box" style="margin-top:12px; background:rgba(239,68,68,0.1); border-left:3px solid #ef4444; padding:10px 12px; border-radius:0 8px 8px 0;">
                     💡 <strong>Совет официанту:</strong> "Если любите острое — Том-Ям огонь. Если хотите поострее, но не экстремально — Тайский салат или колбаски."
-                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
             </div>
         </div>
+        </div>
 
-        <div class="qa-card" onclick="toggleQA(this)">
+        <div class="qa-card" data-qa-id="qa_что_без_глютена" onclick="toggleQA(this)">
             <div class="qa-header">
                 <div class="qa-question">Что без глютена?</div>
                 <div class="qa-toggle">▼</div>
@@ -430,11 +452,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
                 </div>
                 <div class="tip-box" style="margin-top:12px;">
                     ⚠️ <strong>Важно:</strong> Салат Цезарь — в нём сухарики (глютен). Салат с печенью — бекон и гренки могут содержать глютен. Уточняйте у гостя, что именно исключается.
-                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
             </div>
         </div>
+        </div>
 
-        <div class="qa-card" onclick="toggleQA(this)">
+        <div class="qa-card" data-qa-id="qa_что_без_лактозы" onclick="toggleQA(this)">
             <div class="qa-header">
                 <div class="qa-question">Что без лактозы?</div>
                 <div class="qa-toggle">▼</div>
@@ -456,11 +482,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
                 </div>
                 <div class="tip-box" style="margin-top:12px;">
                     ⚠️ <strong>Важно:</strong> Многие соусы содержат сливки или сметану. Если гость строго без лактозы — уточняйте у кухни состав соуса к конкретному блюду.
-                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
             </div>
         </div>
+        </div>
 
-        <div class="qa-card" onclick="toggleQA(this)">
+        <div class="qa-card" data-qa-id="qa_что_вегетарианское" onclick="toggleQA(this)">
             <div class="qa-header">
                 <div class="qa-question">Что вегетарианское?</div>
                 <div class="qa-toggle">▼</div>
@@ -488,11 +518,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
                 </div>
                 <div class="tip-box" style="margin-top:12px; background:rgba(52,211,153,0.1); border-left:3px solid var(--status-green); padding:10px 12px; border-radius:0 8px 8px 0;">
                     💡 <strong>Совет официанту:</strong> "Если вы вегетарианец — рекомендую Пиццу Гарганзола или Вареники с грибами. Если едите рыбу — добавьте Стейк лосося или Салат Нисуаз."
-                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
             </div>
         </div>
+        </div>
 
-        <div class="qa-card" onclick="toggleQA(this)">
+        <div class="qa-card" data-qa-id="qa_какая_прожарка_стейков" onclick="toggleQA(this)">
             <div class="qa-header">
                 <div class="qa-question">Какая прожарка стейков?</div>
                 <div class="qa-toggle">▼</div>
@@ -508,11 +542,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
                 </ul>
                 <div class="tip-box" style="margin-top:12px;">
                     💡 <strong>Совет официанту:</strong> "Для Рибай рекомендую Medium Rare — жир прожарки тает, мясо сочное. Для Филе Миньон — Medium, он постный и на Rare может быть жёстким."
-                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
             </div>
         </div>
+        </div>
 
-        <div class="qa-card" onclick="toggleQA(this)">
+        <div class="qa-card" data-qa-id="qa_что_порекомендовать_компании_4" onclick="toggleQA(this)">
             <div class="qa-header">
                 <div class="qa-question">Что порекомендовать компании (4-6 человек)?</div>
                 <div class="qa-toggle">▼</div>
@@ -531,11 +569,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
                 </div>
                 <div class="tip-box" style="margin-top:12px; background:rgba(96,165,250,0.1); border-left:3px solid var(--status-blue); padding:10px 12px; border-radius:0 8px 8px 0;">
                     💡 <strong>Совет официанту:</strong> "На компанию из 4 человек рекомендую Сковороду Дача + 2 пиццы + салат. Всё делится, разные вкусы, и выходит выгодно."
-                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
             </div>
         </div>
+        </div>
 
-        <div class="qa-card" onclick="toggleQA(this)">
+        <div class="qa-card" data-qa-id="qa_что_подходит_к_пиву" onclick="toggleQA(this)">
             <div class="qa-header">
                 <div class="qa-question">Что подходит к пиву?</div>
                 <div class="qa-toggle">▼</div>
@@ -555,11 +597,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
                 </div>
                 <div class="tip-box" style="margin-top:12px;">
                     💡 <strong>Совет официанту:</strong> "К светлому пиву — креветки в темпуре или гренки. К тёмному — ребра барбекю или колбаски."
-                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
             </div>
         </div>
+        </div>
 
-        <div class="qa-card" onclick="toggleQA(this)">
+        <div class="qa-card" data-qa-id="qa_в_чём_разница_между_стейками" onclick="toggleQA(this)">
             <div class="qa-header">
                 <div class="qa-question">В чём разница между стейками?</div>
                 <div class="qa-toggle">▼</div>
@@ -572,19 +618,22 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
                 <strong>Скерт (Skirt)</strong> — диафрагма, плотное мясо с выраженным вкусом. Быстро готовится, идеально Medium Rare.</p>
                 <div class="tip-box" style="margin-top:12px;">
                     💡 <strong>Совет официанту:</strong> "Если первый раз — берите Рибай, он прощает ошибки прожарки. Если знаете толк — Пиканья или Скерт для эксперимента."
-                </div>
             </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
+            </div>
+        </div>
         </div>
   </main>
 
   <main class="content knowledge-section" id="knowledgeContent">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
       <div class="category-title" style="margin-top:0;">📚 Знания — для официантов</div>
       <button class="admin-btn" id="addKnowledgeBtn" style="display:none;" onclick="event.stopPropagation();addNewKnowledge()">➕ Добавить знание</button>
     </div>
-<div class="category-title" style="margin-top:0;">📚 Знания — для официантов</div>
 
-        <div class="knowledge-card" onclick="toggleKnowledge(this)">
+        <div class="knowledge-card" data-kn-id="kn__стейки_виды_и_особенности" onclick="toggleKnowledge(this)">
             <div class="knowledge-header">
                 <div class="knowledge-title">🥩 Стейки: виды и особенности</div>
                 <div class="knowledge-toggle">▼</div>
@@ -639,11 +688,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 
                 <div class="tip-box">
                     📌 <strong>Ключевое правило:</strong> Все стейки отдыхают 3-5 минут после жарки — соки распределяются. Резать сразу = сухое мясо.
-                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-kn">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button>
             </div>
         </div>
+        </div>
 
-        <div class="knowledge-card" onclick="toggleKnowledge(this)">
+        <div class="knowledge-card" data-kn-id="kn__мираторг_о_производителе" onclick="toggleKnowledge(this)">
             <div class="knowledge-header">
                 <div class="knowledge-title">🐄 Мираторг: о производителе</div>
                 <div class="knowledge-toggle">▼</div>
@@ -666,11 +719,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
                 </ul>
                 <div class="tip-box">
                     📌 <strong>Для гостя:</strong> "Наши стейки — от Мираторг, мраморная говядина породы Ангус. Мясо выдерживается 21 день, поэтому оно такое сочное и ароматное."
-                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-kn">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button>
             </div>
         </div>
+        </div>
 
-        <div class="knowledge-card" onclick="toggleKnowledge(this)">
+        <div class="knowledge-card" data-kn-id="kn__мангал_что_важно_знать" onclick="toggleKnowledge(this)">
             <div class="knowledge-header">
                 <div class="knowledge-title">🔥 Мангал: что важно знать</div>
                 <div class="knowledge-toggle">▼</div>
@@ -717,11 +774,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 
                 <div class="tip-box">
                     📌 <strong>Ключевое правило мангала:</strong> Всё готовится на углях, не на газе. Дымок — это фишка, не дефект. Если гость жалуется на дымный запах — объясни, что это "вкус мангала".
-                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-kn">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button>
             </div>
         </div>
+        </div>
 
-        <div class="knowledge-card" onclick="toggleKnowledge(this)">
+        <div class="knowledge-card" data-kn-id="kn__соусы_гид_для_официанта" onclick="toggleKnowledge(this)">
             <div class="knowledge-header">
                 <div class="knowledge-title">🍝 Соусы: гид для официанта</div>
                 <div class="knowledge-toggle">▼</div>
@@ -777,11 +838,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 
                 <div class="tip-box">
                     📌 <strong>Совет:</strong> Если гость просит соус отдельно — это нормально. Уточни у кухни, можно ли. Бешамель и цезарь — сложные в приготовлении, томатный и терияки — проще.
-                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-kn">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button>
             </div>
         </div>
+        </div>
 
-        <div class="knowledge-card" onclick="toggleKnowledge(this)">
+        <div class="knowledge-card" data-kn-id="kn__рыба_и_морепродукты" onclick="toggleKnowledge(this)">
             <div class="knowledge-header">
                 <div class="knowledge-title">🐟 Рыба и морепродукты</div>
                 <div class="knowledge-toggle">▼</div>
@@ -822,11 +887,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 
                 <div class="tip-box">
                     📌 <strong>Совет:</strong> Если гость заказывает рыбу — уточни, любит ли он лимон. Некоторые предпочитают без. Лосось и тунец — дорогие позиции, всегда уточняй прожарку (для тунца — Rare/Medium Rare).
-                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-kn">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button>
             </div>
         </div>
+        </div>
 
-        <div class="knowledge-card" onclick="toggleKnowledge(this)">
+        <div class="knowledge-card" data-kn-id="kn__скрипты_продаж" onclick="toggleKnowledge(this)">
             <div class="knowledge-header">
                 <div class="knowledge-title">🗣️ Скрипты продаж</div>
                 <div class="knowledge-toggle">▼</div>
@@ -863,8 +932,12 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
                     2. "Насколько строго?" (трассировка или просто состав)<br>
                     3. Сообщи кухне — напиши на чеке или передай шефу лично<br>
                     4. Не гадай. Если не уверен — скажи "Уточню у кухни".
-                </div>
             </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-kn">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button>
+            </div>
+        </div>
         </div>
   </main>
 
@@ -1655,7 +1728,7 @@ function openModal(title, fields, callback) {
   var body = document.getElementById('modalBody');
   body.innerHTML = fields.map(function(f) {
     if (f.type === 'textarea') {
-      return '<div class="modal-field"><label>' + f.label + '</label><textarea class="modal-input" id="modal-' + f.id + '" placeholder="' + (f.placeholder || '') + '" style="min-height:120px;resize:vertical;">' + (f.value || '') + '</textarea></div>';
+      return '<div class="modal-field"><label>' + f.label + '</label><textarea class="modal-input" id="modal-' + f.id + '" placeholder="' + (f.placeholder || '') + '" style="min-height:120px;resize:vertical;font-family:inherit;">' + (f.value || '') + '</textarea></div>';
     }
     return '<div class="modal-field"><label>' + f.label + '</label><input type="' + (f.type || 'text') + '" class="modal-input" id="modal-' + f.id + '" value="' + (f.value || '') + '" placeholder="' + (f.placeholder || '') + '"></div>';
   }).join('');
@@ -1772,15 +1845,47 @@ document.getElementById('menuContent').addEventListener('click', function(e) {
   e.stopPropagation();
   var action = btn.getAttribute('data-action');
   var id = btn.getAttribute('data-dish-id');
-  if (!action || !id) return;
+  if (!action) return;
   try {
-    if (action === 'edit') editDish(id);
-    else if (action === 'price') setPrice(id);
-    else if (action === 'photo') setPhoto(id);
-    else if (action === 'delete') deleteDish(id);
+    if (action === 'edit' && id) editDish(id);
+    else if (action === 'price' && id) setPrice(id);
+    else if (action === 'photo' && id) setPhoto(id);
+    else if (action === 'delete' && id) deleteDish(id);
+    else if (action === 'edit-qa') editQA(btn);
+    else if (action === 'delete-qa') deleteQA(btn);
+    else if (action === 'edit-kn') editKnowledge(btn);
+    else if (action === 'delete-kn') deleteKnowledge(btn);
   } catch(err) {
     alert('Ошибка: ' + (err.message || err));
     console.error('Admin button error:', err);
+  }
+});
+
+document.getElementById('qaContent').addEventListener('click', function(e) {
+  var btn = e.target.closest('.admin-btn');
+  if (!btn) return;
+  e.stopPropagation();
+  var action = btn.getAttribute('data-action');
+  try {
+    if (action === 'edit-qa') editQA(btn);
+    else if (action === 'delete-qa') deleteQA(btn);
+  } catch(err) {
+    alert('Ошибка: ' + (err.message || err));
+    console.error('QA button error:', err);
+  }
+});
+
+document.getElementById('knowledgeContent').addEventListener('click', function(e) {
+  var btn = e.target.closest('.admin-btn');
+  if (!btn) return;
+  e.stopPropagation();
+  var action = btn.getAttribute('data-action');
+  try {
+    if (action === 'edit-kn') editKnowledge(btn);
+    else if (action === 'delete-kn') deleteKnowledge(btn);
+  } catch(err) {
+    alert('Ошибка: ' + (err.message || err));
+    console.error('Knowledge button error:', err);
   }
 });
 
@@ -1952,8 +2057,8 @@ function addNewDish() {
     { id: 'name', label: 'Название', placeholder: 'Название блюда' },
     { id: 'weight', label: 'Вес', placeholder: 'Например: 250г' },
     { id: 'time', label: 'Время приготовления', placeholder: 'Например: 10-15 мин' },
-    { id: 'description', label: 'Описание для гостя', placeholder: 'Описание...' },
-    { id: 'ingredients', label: 'Ключевые ингредиенты', placeholder: 'Ингредиенты через запятую...' },
+    { id: 'description', label: 'Описание для гостя', placeholder: 'Описание...', type: 'textarea' },
+    { id: 'ingredients', label: 'Ключевые ингредиенты', placeholder: 'Ингредиенты через запятую...', type: 'textarea' },
     { id: 'icon', label: 'Иконка (эмодзи)', value: '🍽', placeholder: '🍽' },
     { id: 'allergens', label: 'Аллергены (через запятую)', placeholder: 'лактоза,глютен,орехи...' },
     { id: 'vegetarian', label: 'Вегетарианское (да/нет)', value: 'нет', placeholder: 'да или нет' }
@@ -1972,24 +2077,16 @@ function addNewDish() {
       price: '',
       photo: ''
     };
-    // Auto-detect allergens from ingredients
     var auto = detectAllergens(newDish.ingredients);
     auto.forEach(function(a) {
       if (newDish.allergens.indexOf(a) === -1) newDish.allergens.push(a);
     });
     menuData.push(newDish);
     saveDishToFirebase(newDish.id, {
-      category: newDish.category,
-      name: newDish.name,
-      weight: newDish.weight,
-      time: newDish.time,
-      allergens: newDish.allergens,
-      vegetarian: newDish.vegetarian,
-      icon: newDish.icon,
-      description: newDish.description,
-      ingredients: newDish.ingredients,
-      price: '',
-      photo: ''
+      category: newDish.category, name: newDish.name, weight: newDish.weight,
+      time: newDish.time, allergens: newDish.allergens, vegetarian: newDish.vegetarian,
+      icon: newDish.icon, description: newDish.description, ingredients: newDish.ingredients,
+      price: '', photo: ''
     });
     renderMenu();
     applyRolePermissions();
@@ -2003,15 +2100,16 @@ function addNewQA() {
     { id: 'answer', label: 'Ответ (HTML)', placeholder: '<p>Ответ...</p>', type: 'textarea' }
   ], function(values) {
     if (!values.question) { alert('Введите вопрос'); return; }
+    var qaId = 'qa_' + Date.now();
     var container = document.getElementById('qaContent');
     var newCard = document.createElement('div');
     newCard.className = 'qa-card';
+    newCard.setAttribute('data-qa-id', qaId);
     newCard.setAttribute('onclick', 'toggleQA(this)');
-    newCard.innerHTML = '<div class="qa-header"><div class="qa-question">' + escapeHtml(values.question) + '</div><div class="qa-toggle">▼</div></div><div class="qa-answer">' + (values.answer || '<p>Ответ пока не заполнен</p>') + '</div>';
+    newCard.innerHTML = '<div class="qa-header"><div class="qa-question">' + escapeHtml(values.question) + '</div><div class="qa-toggle">▼</div></div><div class="qa-answer">' + (values.answer || '<p>Ответ пока не заполнен</p>') + '</div><div class="admin-controls" style="display:none;"><button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button><button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button></div>';
     container.appendChild(newCard);
-    // Save to Firebase
+    applyRolePermissions();
     if (db) {
-      var qaId = 'qa_' + Date.now();
       db.ref('qa/' + qaId).set({ question: values.question, answer: values.answer || '' });
     }
     alert('Вопрос добавлен');
@@ -2024,19 +2122,88 @@ function addNewKnowledge() {
     { id: 'content', label: 'Содержание (HTML)', placeholder: '<h4>Заголовок</h4><ul><li>Пункт 1</li></ul>', type: 'textarea' }
   ], function(values) {
     if (!values.title) { alert('Введите заголовок'); return; }
+    var knId = 'kn_' + Date.now();
     var container = document.getElementById('knowledgeContent');
     var newCard = document.createElement('div');
     newCard.className = 'knowledge-card';
+    newCard.setAttribute('data-kn-id', knId);
     newCard.setAttribute('onclick', 'toggleKnowledge(this)');
-    newCard.innerHTML = '<div class="knowledge-header"><div class="knowledge-title">' + escapeHtml(values.title) + '</div><div class="knowledge-toggle">▼</div></div><div class="knowledge-content">' + (values.content || '<p>Содержание пока не заполнено</p>') + '</div>';
+    newCard.innerHTML = '<div class="knowledge-header"><div class="knowledge-title">' + escapeHtml(values.title) + '</div><div class="knowledge-toggle">▼</div></div><div class="knowledge-content">' + (values.content || '<p>Содержание пока не заполнено</p>') + '</div><div class="admin-controls" style="display:none;"><button class="admin-btn" data-action="edit-kn">✏️ Редактировать</button><button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button></div>';
     container.appendChild(newCard);
-    // Save to Firebase
+    applyRolePermissions();
     if (db) {
-      var knId = 'kn_' + Date.now();
       db.ref('knowledge/' + knId).set({ title: values.title, content: values.content || '' });
     }
     alert('Знание добавлено');
   });
+}
+
+function editQA(btn) {
+  var card = btn.closest('.qa-card');
+  if (!card) return;
+  var qaId = card.getAttribute('data-qa-id');
+  var question = card.querySelector('.qa-question');
+  var answer = card.querySelector('.qa-answer');
+  if (!question || !answer) return;
+  var currentQ = question.textContent.trim();
+  var currentA = answer.innerHTML.trim();
+  openModal('Редактировать вопрос', [
+    { id: 'question', label: 'Вопрос', value: currentQ },
+    { id: 'answer', label: 'Ответ (HTML)', value: currentA, type: 'textarea' }
+  ], function(values) {
+    if (values.question) question.textContent = values.question;
+    if (values.answer) answer.innerHTML = values.answer;
+    if (db && qaId) {
+      db.ref('qa/' + qaId).update({ question: values.question || currentQ, answer: values.answer || currentA });
+    }
+  });
+}
+
+function deleteQA(btn) {
+  if (!confirm('Удалить этот вопрос?')) return;
+  var card = btn.closest('.qa-card');
+  if (!card) return;
+  var qaId = card.getAttribute('data-qa-id');
+  if (db && qaId) {
+    db.ref('qa/' + qaId).remove()
+      .then(function() { console.log('QA удалён из Firebase:', qaId); })
+      .catch(function(e) { console.error('Ошибка удаления QA:', e); });
+  }
+  card.remove();
+}
+
+function editKnowledge(btn) {
+  var card = btn.closest('.knowledge-card');
+  if (!card) return;
+  var knId = card.getAttribute('data-kn-id');
+  var title = card.querySelector('.knowledge-title');
+  var content = card.querySelector('.knowledge-content');
+  if (!title || !content) return;
+  var currentT = title.textContent.trim();
+  var currentC = content.innerHTML.trim();
+  openModal('Редактировать знание', [
+    { id: 'title', label: 'Заголовок', value: currentT },
+    { id: 'content', label: 'Содержание (HTML)', value: currentC, type: 'textarea' }
+  ], function(values) {
+    if (values.title) title.textContent = values.title;
+    if (values.content) content.innerHTML = values.content;
+    if (db && knId) {
+      db.ref('knowledge/' + knId).update({ title: values.title || currentT, content: values.content || currentC });
+    }
+  });
+}
+
+function deleteKnowledge(btn) {
+  if (!confirm('Удалить это знание?')) return;
+  var card = btn.closest('.knowledge-card');
+  if (!card) return;
+  var knId = card.getAttribute('data-kn-id');
+  if (db && knId) {
+    db.ref('knowledge/' + knId).remove()
+      .then(function() { console.log('Knowledge удалён из Firebase:', knId); })
+      .catch(function(e) { console.error('Ошибка удаления Knowledge:', e); });
+  }
+  card.remove();
 }
 
 function escapeHtml(text) {
