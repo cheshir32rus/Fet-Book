@@ -602,192 +602,6 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
                 <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
             </div>
         </div>
-        </div><div class="qa-card" data-qa-id="qa_встреча_гостя" onclick="toggleQA(this)">
-            <div class="qa-header">
-                <div class="qa-question">🤝 Как встречать гостя?</div>
-                <div class="qa-toggle">▼</div>
-            </div>
-            <div class="qa-answer">
-                <p><strong>1. Улыбка + приветствие</strong> — как только гость зашёл. "Добрый день / Добрый вечер!" Достаточно — не надо раскланиваться.</p>
-                <p><strong>2. Быстрая посадка</strong> — "Проходите, садитесь где удобно" или "Вот столик у окна / у стены — как вам?" Не таскать по всему залу 5 минут.</p>
-                <p><strong>3. Дети?</strong> — если с ребёнком — сразу: "Стулчик для малыша нужен?" и меню детское.</p>
-                <p><strong>4. Меню и вода</strong> — сразу, без просьбы. "Вот меню, сейчас принесу воды". Не ждать пока попросят.</p>
-                <p><strong>5. Если занято</strong> — "Минутку, сейчас подготовлю стол". Не заставлять стоять у двери.</p>
-                <p><strong>6. Если нет мест</strong> — честно: "Сейчас все столики заняты, подождёте 15-20 минут? Можно присесть в ожидании". Предложить меню пока ждут.</p>
-                <div class="tip-box" style="margin-top:12px; background:rgba(251,191,36,0.1); border-left:3px solid var(--status-yellow); padding:10px 12px; border-radius:0 8px 8px 0;">
-                    💡 <strong>Главное в кафе:</strong> быстро и по-домашнему. Гость пришёл поесть, не на церемонию. Улыбка + быстрая посадка + сразу вода = уже половина хорошего сервиса.
-                </div>
-            </div>
-            <div class="admin-controls" style="display:none;">
-                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
-                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
-            </div>
-        </div><div class="qa-card" data-qa-id="qa_первый_подход_к_столику" onclick="toggleQA(this)">
-            <div class="qa-header">
-                <div class="qa-question">📝 Первый подход к столику (3-5 мин)</div>
-                <div class="qa-toggle">▼</div>
-            </div>
-            <div class="qa-answer">
-                <p><strong>Тайминг:</strong> подойти в течение 3-5 минут после того как гость сел. Не раньше — дайте осмотреться. Не позже — гость начнёт нервничать.</p>
-                <p><strong>Фраза-подход:</strong></p>
-                <ul style="margin:8px 0 8px 16px;">
-                    <li>✅ <strong>"Добрый вечер. Я готов принять заказ, когда вы будете готовы"</strong> — гость чувствует контроль.</li>
-                    <li>❌ "Вы готовы сделать заказ?" — давит, как на экзамене.</li>
-                    <li>❌ "Что будете?" — грубо.</li>
-                </ul>
-                <p><strong>Если гость не готов:</strong></p>
-                <ul style="margin:8px 0 8px 16px;">
-                    <li>"Конечно, изучайте меню. Я подойду через несколько минут".</li>
-                    <li>"Если нужна помощь с выбором — я рядом".</li>
-                </ul>
-                <p><strong>Что сделать сразу:</strong></p>
-                <ul style="margin:8px 0 8px 16px;">
-                    <li>Принести воды (без просьбы).</li>
-                    <li>Сообщить о спецпредложениях дня.</li>
-                    <li>Если гость первый раз — коротко о кухне: "У нас гриль-меню и домашняя паста".</li>
-                </ul>
-                <div class="tip-box" style="margin-top:12px; background:rgba(251,191,36,0.1); border-left:3px solid var(--status-yellow); padding:10px 12px; border-radius:0 8px 8px 0;">
-                    💡 <strong>Трюк:</strong> Если гость долго выбирает — подойти с вопросом "Что предпочитаете: мясо, рыбу или что-то лёгкое?" — это сужает выбор и ускоряет заказ.
-                </div>
-            </div>
-            <div class="admin-controls" style="display:none;">
-                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
-                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
-            </div>
-        </div><div class="qa-card" data-qa-id="qa_приём_заказа" onclick="toggleQA(this)">
-            <div class="qa-header">
-                <div class="qa-question">🛎️ Приём заказа — скрипты</div>
-                <div class="qa-toggle">▼</div>
-            </div>
-            <div class="qa-answer">
-                <p><strong>Начало:</strong> "Я готов записать. Что предпочитаете?"</p>
-                <p><strong>Если гость спрашивает "Что вкусно?"</strong></p>
-                <ul style="margin:8px 0 8px 16px;">
-                    <li>❌ НЕ "У нас всё вкусно" — звучит как отмазка.</li>
-                    <li>✅ "Сегодня гости часто берут [конкретное блюдо]. Лично мне нравится [другое блюдо] — [почему]".</li>
-                    <li>✅ Уточнить: "Вы любите мясо, рыбу или что-то лёгкое?" → потом рекомендовать.</li>
-                </ul>
-                <p><strong>Апсейл (увеличение чека):</strong></p>
-                <ul style="margin:8px 0 8px 16px;">
-                    <li>"К стейку отлично подойдёт бокал красного — могу предложить".</li>
-                    <li>"К бургеру наши гренки с айоле — классика. Добавить?"</li>
-                    <li>"Хотите соус отдельно? У нас цезарь, бешамель, терияки".</li>
-                </ul>
-                <p><strong>Повтор заказа:</strong> Перед уходом кратко перечислить: "Итак: салат Дача, стейк рибай medium rare, бокал каберне. Всё верно?"</p>
-                <p><strong>Время приготовления:</strong> "Салат — 10 минут, стейк — 20 минут. Всего около 25-30 минут".</p>
-                <div class="tip-box" style="margin-top:12px; background:rgba(251,191,36,0.1); border-left:3px solid var(--status-yellow); padding:10px 12px; border-radius:0 8px 8px 0;">
-                    💡 <strong>Запрещённые фразы:</strong> "Я не знаю" → "Сейчас уточню для вас". "Я вас услышал" → "Понял, отлично". "Отличный выбор" → лучше промолчать или сказать конкретно почему хороший выбор.
-                </div>
-            </div>
-            <div class="admin-controls" style="display:none;">
-                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
-                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
-            </div>
-        </div><div class="qa-card" data-qa-id="qa_работа_с_жалобами" onclick="toggleQA(this)">
-            <div class="qa-header">
-                <div class="qa-question">😤 Жалобы и конфликты</div>
-                <div class="qa-toggle">▼</div>
-            </div>
-            <div class="qa-answer">
-                <p><strong>Алгоритм:</strong></p>
-                <ul style="margin:8px 0 8px 16px;">
-                    <li><strong>1. Слушать.</strong> Не перебивать. Кивать. "Понимаю, расскажите".</li>
-                    <li><strong>2. Извиниться.</strong> "Приношу извинения, это недопустимо".</li>
-                    <li><strong>3. Решение.</strong> "Что я могу сделать, чтобы исправить ситуацию?"</li>
-                    <li><strong>4. Действие.</strong> Сделать то, что договорились. + сообщить шефу/менеджеру.</li>
-                    <li><strong>5. Проверка.</strong> Подойти через 5 минут: "Всё ли сейчас хорошо?"</li>
-                </ul>
-                <p><strong>Типичные ситуации:</strong></p>
-                <ul style="margin:8px 0 8px 16px;">
-                    <li><strong>Долго готовят:</strong> "Прошу прощения за ожидание. Блюдо почти готово — ещё 5 минут. Принести закуску/напиток на дом?"</li>
-                    <li><strong>Холодное блюдо:</strong> "Приношу извинения. Переготовим сразу же. Или могу предложить другое блюдо?"</li>
-                    <li><strong>Недовес/пересол:</strong> "Понял. Сейчас уточню у кухни и решим вопрос. Что предпочитаете: переделать или убрать с чека?"</li>
-                    <li><strong>Гость пьян/агрессивен:</strong> Не спорить. Позвать менеджера. Не угрожать. Спокойно: "Я сейчас позову управляющего, он решит вопрос".</li>
-                </ul>
-                <div class="tip-box" style="margin-top:12px; background:rgba(251,191,36,0.1); border-left:3px solid var(--status-yellow); padding:10px 12px; border-radius:0 8px 8px 0;">
-                    💡 <strong>Золотое правило:</strong> Гость не всегда прав, но он всегда гость. Даже если жалоба необоснованна — извиниться и предложить компенсацию. Репутация дороже одного блюда.
-                </div>
-            </div>
-            <div class="admin-controls" style="display:none;">
-                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
-                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
-            </div>
-        </div><div class="qa-card" data-qa-id="qa_подача_и_контроль" onclick="toggleQA(this)">
-            <div class="qa-header">
-                <div class="qa-question">🍽️ Подача и контроль стола</div>
-                <div class="qa-toggle">▼</div>
-            </div>
-            <div class="qa-answer">
-                <p><strong>Подача:</strong></p>
-                <ul style="margin:8px 0 8px 16px;">
-                    <li>Подавать с правой стороны гостя.</li>
-                    <li>Горячие тарелки — предупредить: "Осторожно, тарелка горячая".</li>
-                    <li>Назвать блюдо: "Ваш стейк рибай, medium rare".</li>
-                    <li>Соус — спрашивать: "Соус отдельно или полить?"</li>
-                </ul>
-                <p><strong>Контроль через 2-3 минуты:</strong></p>
-                <ul style="margin:8px 0 8px 16px;">
-                    <li>"Всё ли вас устраивает?" — не "Всё нормально?" (нормально = средне).</li>
-                    <li>"Как вам блюдо?" — если гость колеблется, спросить конкретнее: "Мясо по прожарке устраивает?"</li>
-                </ul>
-                <p><strong>Уборка:</strong></p>
-                <ul style="margin:8px 0 8px 16px;">
-                    <li>Не убирать, пока гость явно не закончил (не отодвинул тарелку).</li>
-                    <li>Уточнить: "Могу убрать?" или "Принести десертное меню?"</li>
-                    <li>Пустые стаканы/бутылки — убирать сразу.</li>
-                </ul>
-                <p><strong>Допродажи:</strong></p>
-                <ul style="margin:8px 0 8px 16px;">
-                    <li>"К основному блюду могу предложить вино/пиво/сок".</li>
-                    <li>После основного: "Желаете посмотреть десертное меню?"</li>
-                    <li>"Кофе или чай? У нас свежемолотый кофе".</li>
-                </ul>
-                <div class="tip-box" style="margin-top:12px; background:rgba(251,191,36,0.1); border-left:3px solid var(--status-yellow); padding:10px 12px; border-radius:0 8px 8px 0;">
-                    💡 <strong>Сигналы что гость закончил:</strong> отодвинул тарелку, положил приборы на тарелку, откинулся на спинку стула. Не спрашивать "Вы закончили?" — это торопит. Лучше: "Принести десертное меню?"
-                </div>
-            </div>
-            <div class="admin-controls" style="display:none;">
-                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
-                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
-            </div>
-        </div><div class="qa-card" data-qa-id="qa_счёт_и_прощание" onclick="toggleQA(this)">
-            <div class="qa-header">
-                <div class="qa-question">💰 Счёт и прощание</div>
-                <div class="qa-toggle">▼</div>
-            </div>
-            <div class="qa-answer">
-                <p><strong>Подача счёта:</strong></p>
-                <ul style="margin:8px 0 8px 16px;">
-                    <li>Принести по первому намёку: "Можно счёт?" / жест с рукой.</li>
-                    <li>Не спрашивать "Вам счёт или ещё посидите?" — это давит.</li>
-                    <li>"Ваш счёт. Принимаете карту или наличные?"</li>
-                    <li>Если компания — уточнить: "Вам один счёт или раздельно?"</li>
-                </ul>
-                <p><strong>Оплата:</strong></p>
-                <ul style="margin:8px 0 8px 16px;">
-                    <li>Если гость платит картой — принести терминал. Не уходить с картой.</li>
-                    <li>Если наличные — сдачу принести на блюдце/в папке.</li>
-                    <li>Чаевые — не считать при госте. Не требовать.</li>
-                </ul>
-                <p><strong>Прощание:</strong></p>
-                <ul style="margin:8px 0 8px 16px;">
-                    <li>"Спасибо, что были с нами. Ждём вас снова!"</li>
-                    <li>"Хорошего вечера!" / "Доброй ночи!"</li>
-                    <li>Помочь с одеждой. Проводить до двери.</li>
-                </ul>
-                <p><strong>После ухода:</strong></p>
-                <ul style="margin:8px 0 8px 16px;">
-                    <li>Убрать стол в течение 2 минут.</li>
-                    <li>Проверить не забыл ли гость телефон/зонт/куртку.</li>
-                </ul>
-                <div class="tip-box" style="margin-top:12px; background:rgba(251,191,36,0.1); border-left:3px solid var(--status-yellow); padding:10px 12px; border-radius:0 8px 8px 0;">
-                    💡 <strong>Последнее впечатление — самое сильное.</strong> Даже если всё было идеально, но гость ушёл без улыбки и прощания — он запомнит это. Проводить до двери — стандарт.
-                </div>
-            </div>
-            <div class="admin-controls" style="display:none;">
-                <button class="admin-btn" data-action="edit-qa">✏️ Редактировать</button>
-                <button class="admin-btn delete chef-only" data-action="delete-qa">🗑️ Удалить</button>
-            </div>
         </div>
   </main>
 
@@ -1184,6 +998,301 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
                 <button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button>
             </div>
         </div>
+
+        <div class="knowledge-card" data-kn-id="kn__официант_база" onclick="toggleKnowledge(this)">
+            <div class="knowledge-header">
+                <div class="knowledge-title">🍽️ Официант — база</div>
+                <div class="knowledge-toggle">▼</div>
+            </div>
+            <div class="knowledge-content">
+                <p><strong>Официант — лицо заведения.</strong> Гость не видит кухню, не знает шефа, не общается с владельцем. Официант — это всё, что он помнит о «Даче».</p>
+
+                <h4>1. Внешний вид</h4>
+                <ul>
+                    <li>Чистая форма — без пятен, без запаха</li>
+                    <li>Фартук — всегда на себе</li>
+                    <li>Руки — чистые, ногти — короткие</li>
+                    <li>Волосы — собраны, борода — опрятна</li>
+                    <li>Духи — умеренно, не резко</li>
+                    <li>Обувь — чистая, закрытая</li>
+                </ul>
+                <div class="tip-box">
+                    💡 <strong>Первое впечатление:</strong> гость оценивает официанта за 7 секунд. Улыбка, чистота, уверенность — до того, как ты открыл рот.
+                </div>
+
+                <h4>2. Знание меню — минимум</h4>
+                <ul>
+                    <li>Знаешь состав каждого блюда — наизусть</li>
+                    <li>Знаешь аллергены — без подсказок</li>
+                    <li>Знаешь время приготовления — точно</li>
+                    <li>Знаешь пейринги — что к чему подходит</li>
+                    <li>Пробовал блюда — хотя бы основные</li>
+                </ul>
+                <div class="tip-box" style="background:rgba(239,68,68,0.1); border-left:3px solid #ef4444;">
+                    ⚠️ <strong>Критично:</strong> «Я не знаю» — запрещено. «Сейчас уточню у шефа» — нормально. Но лучше знать.
+                </div>
+
+                <h4>3. Тайминги — золотые правила</h4>
+                <ul>
+                    <li><span class="highlight">3-5 мин</span> — первый подход после посадки</li>
+                    <li><span class="highlight">10 мин</span> — салаты и закуски</li>
+                    <li><span class="highlight">15-20 мин</span> — горячее</li>
+                    <li><span class="highlight">2-3 мин</span> — контроль после подачи</li>
+                    <li><span class="highlight">Мгновенно</span> — счёт по запросу</li>
+                </ul>
+
+                <h4>4. Запрещённые фразы</h4>
+                <ul>
+                    <li>❌ «Я не знаю» → ✅ «Сейчас уточню»</li>
+                    <li>❌ «Всё нормально?» → ✅ «Всё ли вас устраивает?»</li>
+                    <li>❌ «Отличный выбор» → ✅ промолчи или скажи конкретно почему</li>
+                    <li>❌ «Я вас услышал» → ✅ «Понял, отлично»</li>
+                    <li>❌ «Что будете?» → ✅ «Что предпочитаете?»</li>
+                    <li>❌ «У нас всё вкусно» → ✅ «Сегодня гости часто берут...»</li>
+                </ul>
+
+                <h4>5. Апсейл — увеличение чека</h4>
+                <ul>
+                    <li>К стейку — вино: «К Рибай отлично подойдёт Каберне»</li>
+                    <li>К бургеру — гренки: «Наши гренки с айоле — классика»</li>
+                    <li>К основному — соус отдельно</li>
+                    <li>После основного — десерт: «Фирменное мороженое или вареники с вишней?»</li>
+                    <li>К десерту — кофе: «Свежемолотый, к вашему мороженому — идеально»</li>
+                </ul>
+                <div class="tip-box">
+                    💡 <strong>Главное:</strong> апсейл — это не навязчивость. Это помощь гостю сделать вечер лучше.
+                </div>
+
+                <h4>6. Аллергии и особые пожелания</h4>
+                <ul>
+                    <li>Всегда уточняй: «Что именно исключаем?»</li>
+                    <li>Уточни строгость: «Трассировка или просто состав?»</li>
+                    <li>Сообщи кухне — напиши на чеке или передай шефу лично</li>
+                    <li>Не гадай. Не уверен — «Уточню у кухни»</li>
+                </ul>
+
+                <h4>7. Работа с командой</h4>
+                <ul>
+                    <li>Не перекладывай на кухню свои ошибки</li>
+                    <li>Помогай коллегам — если у тебя свободная минута</li>
+                    <li>Сообщай админу о проблемах — не жди, пока станет хуже</li>
+                    <li>Уважай су-шефа на линии — он загружен</li>
+                </ul>
+
+                <div class="tip-box" style="margin-top:12px; background:rgba(52,211,153,0.1); border-left:3px solid var(--status-green);">
+                    💡 <strong>Главное правило официанта:</strong> Гость не пришёл есть. Он пришёл провести время. Еда — повод. Твоя задача — сделать это время комфортным. Улыбка, внимание, забота — важнее скорости.
+                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-kn">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button>
+            </div>
+        </div>
+
+
+        <div class="knowledge-card" data-kn-id="kn_встреча_гостя" onclick="toggleKnowledge(this)">
+            <div class="knowledge-header">
+                <div class="knowledge-title">🤝 Как встречать гостя?</div>
+                <div class="knowledge-toggle">▼</div>
+            </div>
+            <div class="knowledge-content">
+                <p><strong>1. Улыбка + приветствие</strong> — как только гость зашёл. "Добрый день / Добрый вечер!" Достаточно — не надо раскланиваться.</p>
+                <p><strong>2. Быстрая посадка</strong> — "Проходите, садитесь где удобно" или "Вот столик у окна / у стены — как вам?" Не таскать по всему залу 5 минут.</p>
+                <p><strong>3. Дети?</strong> — если с ребёнком — сразу: "Стулчик для малыша нужен?" и меню детское.</p>
+                <p><strong>4. Меню и вода</strong> — сразу, без просьбы. "Вот меню, сейчас принесу воды". Не ждать пока попросят.</p>
+                <p><strong>5. Если занято</strong> — "Минутку, сейчас подготовлю стол". Не заставлять стоять у двери.</p>
+                <p><strong>6. Если нет мест</strong> — честно: "Сейчас все столики заняты, подождёте 15-20 минут? Можно присесть в ожидании". Предложить меню пока ждут.</p>
+                <div class="tip-box" style="margin-top:12px; background:rgba(251,191,36,0.1); border-left:3px solid var(--status-yellow); padding:10px 12px; border-radius:0 8px 8px 0;">
+                    💡 <strong>Главное в кафе:</strong> быстро и по-домашнему. Гость пришёл поесть, не на церемонию. Улыбка + быстрая посадка + сразу вода = уже половина хорошего сервиса.
+                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-kn">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button>
+            </div>
+        </div>
+
+
+        <div class="knowledge-card" data-kn-id="kn_первый_подход_к_столику" onclick="toggleKnowledge(this)">
+            <div class="knowledge-header">
+                <div class="knowledge-title">📝 Первый подход к столику (3-5 мин)</div>
+                <div class="knowledge-toggle">▼</div>
+            </div>
+            <div class="knowledge-content">
+                <p><strong>Тайминг:</strong> подойти в течение 3-5 минут после того как гость сел. Не раньше — дайте осмотреться. Не позже — гость начнёт нервничать.</p>
+                <p><strong>Фраза-подход:</strong></p>
+                <ul style="margin:8px 0 8px 16px;">
+                    <li>✅ <strong>"Добрый вечер. Я готов принять заказ, когда вы будете готовы"</strong> — гость чувствует контроль.</li>
+                    <li>❌ "Вы готовы сделать заказ?" — давит, как на экзамене.</li>
+                    <li>❌ "Что будете?" — грубо.</li>
+                </ul>
+                <p><strong>Если гость не готов:</strong></p>
+                <ul style="margin:8px 0 8px 16px;">
+                    <li>"Конечно, изучайте меню. Я подойду через несколько минут".</li>
+                    <li>"Если нужна помощь с выбором — я рядом".</li>
+                </ul>
+                <p><strong>Что сделать сразу:</strong></p>
+                <ul style="margin:8px 0 8px 16px;">
+                    <li>Принести воды (без просьбы).</li>
+                    <li>Сообщить о спецпредложениях дня.</li>
+                    <li>Если гость первый раз — коротко о кухне: "У нас гриль-меню и домашняя паста".</li>
+                </ul>
+                <div class="tip-box" style="margin-top:12px; background:rgba(251,191,36,0.1); border-left:3px solid var(--status-yellow); padding:10px 12px; border-radius:0 8px 8px 0;">
+                    💡 <strong>Трюк:</strong> Если гость долго выбирает — подойти с вопросом "Что предпочитаете: мясо, рыбу или что-то лёгкое?" — это сужает выбор и ускоряет заказ.
+                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-kn">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button>
+            </div>
+        </div>
+
+
+        <div class="knowledge-card" data-kn-id="kn_приём_заказа" onclick="toggleKnowledge(this)">
+            <div class="knowledge-header">
+                <div class="knowledge-title">🛎️ Приём заказа — скрипты</div>
+                <div class="knowledge-toggle">▼</div>
+            </div>
+            <div class="knowledge-content">
+                <p><strong>Начало:</strong> "Я готов записать. Что предпочитаете?"</p>
+                <p><strong>Если гость спрашивает "Что вкусно?"</strong></p>
+                <ul style="margin:8px 0 8px 16px;">
+                    <li>❌ НЕ "У нас всё вкусно" — звучит как отмазка.</li>
+                    <li>✅ "Сегодня гости часто берут [конкретное блюдо]. Лично мне нравится [другое блюдо] — [почему]".</li>
+                    <li>✅ Уточнить: "Вы любите мясо, рыбу или что-то лёгкое?" → потом рекомендовать.</li>
+                </ul>
+                <p><strong>Апсейл (увеличение чека):</strong></p>
+                <ul style="margin:8px 0 8px 16px;">
+                    <li>"К стейку отлично подойдёт бокал красного — могу предложить".</li>
+                    <li>"К бургеру наши гренки с айоле — классика. Добавить?"</li>
+                    <li>"Хотите соус отдельно? У нас цезарь, бешамель, терияки".</li>
+                </ul>
+                <p><strong>Повтор заказа:</strong> Перед уходом кратко перечислить: "Итак: салат Дача, стейк рибай medium rare, бокал каберне. Всё верно?"</p>
+                <p><strong>Время приготовления:</strong> "Салат — 10 минут, стейк — 20 минут. Всего около 25-30 минут".</p>
+                <div class="tip-box" style="margin-top:12px; background:rgba(251,191,36,0.1); border-left:3px solid var(--status-yellow); padding:10px 12px; border-radius:0 8px 8px 0;">
+                    💡 <strong>Запрещённые фразы:</strong> "Я не знаю" → "Сейчас уточню для вас". "Я вас услышал" → "Понял, отлично". "Отличный выбор" → лучше промолчать или сказать конкретно почему хороший выбор.
+                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-kn">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button>
+            </div>
+        </div>
+
+
+        <div class="knowledge-card" data-kn-id="kn_работа_с_жалобами" onclick="toggleKnowledge(this)">
+            <div class="knowledge-header">
+                <div class="knowledge-title">😤 Жалобы и конфликты</div>
+                <div class="knowledge-toggle">▼</div>
+            </div>
+            <div class="knowledge-content">
+                <p><strong>Алгоритм:</strong></p>
+                <ul style="margin:8px 0 8px 16px;">
+                    <li><strong>1. Слушать.</strong> Не перебивать. Кивать. "Понимаю, расскажите".</li>
+                    <li><strong>2. Извиниться.</strong> "Приношу извинения, это недопустимо".</li>
+                    <li><strong>3. Решение.</strong> "Что я могу сделать, чтобы исправить ситуацию?"</li>
+                    <li><strong>4. Действие.</strong> Сделать то, что договорились. + сообщить шефу/менеджеру.</li>
+                    <li><strong>5. Проверка.</strong> Подойти через 5 минут: "Всё ли сейчас хорошо?"</li>
+                </ul>
+                <p><strong>Типичные ситуации:</strong></p>
+                <ul style="margin:8px 0 8px 16px;">
+                    <li><strong>Долго готовят:</strong> "Прошу прощения за ожидание. Блюдо почти готово — ещё 5 минут. Принести закуску/напиток на дом?"</li>
+                    <li><strong>Холодное блюдо:</strong> "Приношу извинения. Переготовим сразу же. Или могу предложить другое блюдо?"</li>
+                    <li><strong>Недовес/пересол:</strong> "Понял. Сейчас уточню у кухни и решим вопрос. Что предпочитаете: переделать или убрать с чека?"</li>
+                    <li><strong>Гость пьян/агрессивен:</strong> Не спорить. Позвать менеджера. Не угрожать. Спокойно: "Я сейчас позову управляющего, он решит вопрос".</li>
+                </ul>
+                <div class="tip-box" style="margin-top:12px; background:rgba(251,191,36,0.1); border-left:3px solid var(--status-yellow); padding:10px 12px; border-radius:0 8px 8px 0;">
+                    💡 <strong>Золотое правило:</strong> Гость не всегда прав, но он всегда гость. Даже если жалоба необоснованна — извиниться и предложить компенсацию. Репутация дороже одного блюда.
+                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-kn">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button>
+            </div>
+        </div>
+
+
+        <div class="knowledge-card" data-kn-id="kn_подача_и_контроль" onclick="toggleKnowledge(this)">
+            <div class="knowledge-header">
+                <div class="knowledge-title">🍽️ Подача и контроль стола</div>
+                <div class="knowledge-toggle">▼</div>
+            </div>
+            <div class="knowledge-content">
+                <p><strong>Подача:</strong></p>
+                <ul style="margin:8px 0 8px 16px;">
+                    <li>Подавать с правой стороны гостя.</li>
+                    <li>Горячие тарелки — предупредить: "Осторожно, тарелка горячая".</li>
+                    <li>Назвать блюдо: "Ваш стейк рибай, medium rare".</li>
+                    <li>Соус — спрашивать: "Соус отдельно или полить?"</li>
+                </ul>
+                <p><strong>Контроль через 2-3 минуты:</strong></p>
+                <ul style="margin:8px 0 8px 16px;">
+                    <li>"Всё ли вас устраивает?" — не "Всё нормально?" (нормально = средне).</li>
+                    <li>"Как вам блюдо?" — если гость колеблется, спросить конкретнее: "Мясо по прожарке устраивает?"</li>
+                </ul>
+                <p><strong>Уборка:</strong></p>
+                <ul style="margin:8px 0 8px 16px;">
+                    <li>Не убирать, пока гость явно не закончил (не отодвинул тарелку).</li>
+                    <li>Уточнить: "Могу убрать?" или "Принести десертное меню?"</li>
+                    <li>Пустые стаканы/бутылки — убирать сразу.</li>
+                </ul>
+                <p><strong>Допродажи:</strong></p>
+                <ul style="margin:8px 0 8px 16px;">
+                    <li>"К основному блюду могу предложить вино/пиво/сок".</li>
+                    <li>После основного: "Желаете посмотреть десертное меню?"</li>
+                    <li>"Кофе или чай? У нас свежемолотый кофе".</li>
+                </ul>
+                <div class="tip-box" style="margin-top:12px; background:rgba(251,191,36,0.1); border-left:3px solid var(--status-yellow); padding:10px 12px; border-radius:0 8px 8px 0;">
+                    💡 <strong>Сигналы что гость закончил:</strong> отодвинул тарелку, положил приборы на тарелку, откинулся на спинку стула. Не спрашивать "Вы закончили?" — это торопит. Лучше: "Принести десертное меню?"
+                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-kn">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button>
+            </div>
+        </div>
+
+
+        <div class="knowledge-card" data-kn-id="kn_счёт_и_прощание" onclick="toggleKnowledge(this)">
+            <div class="knowledge-header">
+                <div class="knowledge-title">💰 Счёт и прощание</div>
+                <div class="knowledge-toggle">▼</div>
+            </div>
+            <div class="knowledge-content">
+                <p><strong>Подача счёта:</strong></p>
+                <ul style="margin:8px 0 8px 16px;">
+                    <li>Принести по первому намёку: "Можно счёт?" / жест с рукой.</li>
+                    <li>Не спрашивать "Вам счёт или ещё посидите?" — это давит.</li>
+                    <li>"Ваш счёт. Принимаете карту или наличные?"</li>
+                    <li>Если компания — уточнить: "Вам один счёт или раздельно?"</li>
+                </ul>
+                <p><strong>Оплата:</strong></p>
+                <ul style="margin:8px 0 8px 16px;">
+                    <li>Если гость платит картой — принести терминал. Не уходить с картой.</li>
+                    <li>Если наличные — сдачу принести на блюдце/в папке.</li>
+                    <li>Чаевые — не считать при госте. Не требовать.</li>
+                </ul>
+                <p><strong>Прощание:</strong></p>
+                <ul style="margin:8px 0 8px 16px;">
+                    <li>"Спасибо, что были с нами. Ждём вас снова!"</li>
+                    <li>"Хорошего вечера!" / "Доброй ночи!"</li>
+                    <li>Помочь с одеждой. Проводить до двери.</li>
+                </ul>
+                <p><strong>После ухода:</strong></p>
+                <ul style="margin:8px 0 8px 16px;">
+                    <li>Убрать стол в течение 2 минут.</li>
+                    <li>Проверить не забыл ли гость телефон/зонт/куртку.</li>
+                </ul>
+                <div class="tip-box" style="margin-top:12px; background:rgba(251,191,36,0.1); border-left:3px solid var(--status-yellow); padding:10px 12px; border-radius:0 8px 8px 0;">
+                    💡 <strong>Последнее впечатление — самое сильное.</strong> Даже если всё было идеально, но гость ушёл без улыбки и прощания — он запомнит это. Проводить до двери — стандарт.
+                </div>
+            </div>
+            <div class="admin-controls" style="display:none;">
+                <button class="admin-btn" data-action="edit-kn">✏️ Редактировать</button>
+                <button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button>
+            </div>
+        </div>
+
      <div class="knowledge-card" data-kn-id="kn__карта_лояльности" onclick="toggleKnowledge(this)">
             <div class="knowledge-header">
                 <div class="knowledge-title">💳 Карта лояльности</div>
