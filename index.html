@@ -196,6 +196,19 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 #addQABtn:hover, #addKnowledgeBtn:hover { background:var(--accent-secondary); transform:translateY(-1px); }
 .qa-card .admin-controls, .knowledge-card .admin-controls { display:none; padding:0 16px 12px 16px; }
 .qa-card .admin-controls.visible, .knowledge-card .admin-controls.visible { display:flex !important; gap:8px; flex-wrap:wrap; }
+
+/* Photo gallery in knowledge cards */
+.knowledge-photos { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+.knowledge-photo { width:80px; height:80px; object-fit:cover; border-radius:8px; border:2px solid var(--border); cursor:pointer; transition:all 0.3s; }
+.knowledge-photo:hover { border-color:var(--accent-primary); transform:scale(1.05); }
+
+/* Lightbox */
+.lightbox-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.92); z-index:2000; display:none; align-items:center; justify-content:center; padding:20px; }
+.lightbox-overlay.active { display:flex; }
+.lightbox-img { max-width:95vw; max-height:90vh; object-fit:contain; border-radius:8px; }
+.lightbox-close { position:absolute; top:20px; right:20px; width:44px; height:44px; background:rgba(255,255,255,0.15); border:none; border-radius:50%; color:#fff; font-size:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.lightbox-close:hover { background:rgba(255,255,255,0.3); }
+.lightbox-caption { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); color:#fff; font-size:14px; background:rgba(0,0,0,0.6); padding:8px 16px; border-radius:20px; }
 </style>
 <base target="_blank">
 </head>
@@ -221,7 +234,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
         <input type="text" class="login-input" id="nameInput" placeholder="Например: Анна, Максим...">
       </div>
     </div>
-    <button class="login-btn" onclick="doLogin()">Войти</button>
+    <button class="login-btn" type="button" onclick="doLogin()">Войти</button>
     <div class="login-error" id="loginError"></div>
   </div>
   <div class="login-hint">Официант: вход по имени, без PIN</div>
@@ -1373,6 +1386,27 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 </div>
 
 <script>
+// Global error handler
+window.onerror = function(msg, url, line, col, error) {
+  console.error('GLOBAL ERROR:', msg, 'at line', line, 'col', col);
+  alert('JS Error: ' + msg + ' (line ' + line + ')');
+  return false;
+};
+
+
+// ==================== LIGHTBOX ====================
+function openLightbox(src, caption) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightboxCaption').textContent = caption || '';
+  document.getElementById('lightbox').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox(e) {
+  if (e && e.target !== document.getElementById('lightbox') && e.target.className !== 'lightbox-close') return;
+  document.getElementById('lightbox').classList.remove('active');
+  document.getElementById('lightboxImg').src = '';
+  document.body.style.overflow = '';
+}
 // ==================== CONFIG ====================
 const CHEFBOOK_URL = 'https://cheshir32rus.github.io/chef-book-dacha2026.V5.0/';
 const PINS = { chef: '1990', admin: '1880' };
@@ -1568,11 +1602,20 @@ function rebuildKnowledgeFromData(data, container) {
   for (var id in data) {
     if (!data.hasOwnProperty(id)) continue;
     var item = data[id];
+    var photosHtml = '';
+    if (item.photos) {
+      var urls = item.photos.split(',').map(function(u) { return u.trim(); }).filter(function(u) { return u; });
+      if (urls.length > 0) {
+        photosHtml = '<div class="knowledge-photos">' + urls.map(function(u, idx) {
+          return '<img class="knowledge-photo" src="' + u + '" alt="Фото ' + (idx+1) + '" onclick="event.stopPropagation(); openLightbox(this.src, \'\')">';
+        }).join('') + '</div>';
+      }
+    }
     var card = document.createElement('div');
     card.className = 'knowledge-card';
     card.setAttribute('data-kn-id', id);
     card.setAttribute('onclick', 'toggleKnowledge(this)');
-    card.innerHTML = '<div class="knowledge-header"><div class="knowledge-title">' + escapeHtml(item.title || '') + '</div><div class="knowledge-toggle">▼</div></div><div class="knowledge-content">' + (item.content || '<p>Содержание пока не заполнено</p>') + '</div><div class="admin-controls" style="display:none;"><button class="admin-btn" data-action="edit-kn">✏️ Редактировать</button><button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button></div>';
+    card.innerHTML = '<div class="knowledge-header"><div class="knowledge-title">' + escapeHtml(item.title || '') + '</div><div class="knowledge-toggle">▼</div></div><div class="knowledge-content">' + (item.content || '<p>Содержание пока не заполнено</p>') + '</div>' + photosHtml + '<div class="admin-controls" style="display:none;"><button class="admin-btn" data-action="edit-kn">✏️ Редактировать</button><button class="admin-btn delete chef-only" data-action="delete-kn">🗑️ Удалить</button></div>';
     container.appendChild(card);
     count++;
   }
@@ -2165,6 +2208,7 @@ function selectRole(role) {
 }
 
 function doLogin() {
+  console.log('doLogin called, role:', selectedRole);
   var errorEl = document.getElementById('loginError');
   if (selectedRole === 'waiter') {
     var name = document.getElementById('nameInput').value.trim();
@@ -2182,10 +2226,14 @@ function doLogin() {
   renderMenu();
   applyRolePermissions();
   initTheme();
-  initFirebase();
-  loadMenuFromFirebase();
-  loadQAFromFirebase();
-  loadKnowledgeFromFirebase();
+  try {
+    initFirebase();
+    loadMenuFromFirebase();
+    loadQAFromFirebase();
+    loadKnowledgeFromFirebase();
+  } catch(e) {
+    console.error('Post-login error:', e);
+  }
 }
 
 function logout() {
@@ -2643,8 +2691,19 @@ function navigateToDish(dishName) {
   }
 }
 
-checkAutoLogin();
-if (!currentUser) selectRole('chef');
+try {
+  checkAutoLogin();
+} catch(e) {
+  console.error('checkAutoLogin error:', e);
+  alert('Auto-login error: ' + e.message);
+}
+if (!currentUser) {
+  try {
+    selectRole('chef');
+  } catch(e) {
+    console.error('selectRole error:', e);
+  }
+}
 
 
 // ==================== ADD NEW ITEMS ====================
@@ -2924,17 +2983,44 @@ function editKnowledge(btn) {
   var knId = card.getAttribute('data-kn-id');
   var title = card.querySelector('.knowledge-title');
   var content = card.querySelector('.knowledge-content');
+  var photosDiv = card.querySelector('.knowledge-photos');
   if (!title || !content) return;
   var currentT = title.textContent.trim();
   var currentC = content.innerHTML.trim();
+  var currentPhotos = '';
+  if (photosDiv) {
+    var imgs = photosDiv.querySelectorAll('img');
+    var urls = [];
+    for (var i = 0; i < imgs.length; i++) { urls.push(imgs[i].src); }
+    currentPhotos = urls.join(',');
+  }
   openModal('Редактировать знание', [
     { id: 'title', label: 'Заголовок', value: currentT },
-    { id: 'content', label: 'Содержание (HTML)', value: currentC, type: 'textarea' }
+    { id: 'content', label: 'Содержание (HTML)', value: currentC, type: 'textarea' },
+    { id: 'photos', label: 'Фото (URL через запятую)', value: currentPhotos, placeholder: 'https://i.imgur.com/xxx.jpg, https://...' }
   ], function(values) {
     if (values.title) title.textContent = values.title;
     if (values.content) content.innerHTML = values.content;
+    // Handle photos
+    var photosHtml = '';
+    if (values.photos) {
+      var urls = values.photos.split(',').map(function(u) { return u.trim(); }).filter(function(u) { return u; });
+      if (urls.length > 0) {
+        photosHtml = '<div class="knowledge-photos">' + urls.map(function(u, idx) {
+          return '<img class="knowledge-photo" src="' + u + '" alt="Фото ' + (idx+1) + '" onclick="event.stopPropagation(); openLightbox(this.src, \'\')">';
+        }).join('') + '</div>';
+      }
+    }
+    // Insert or update photos div
+    var existingPhotos = card.querySelector('.knowledge-photos');
+    if (existingPhotos) existingPhotos.remove();
+    if (photosHtml && content) {
+      content.insertAdjacentHTML('afterend', photosHtml);
+    }
     if (db && knId) {
-      db.ref('knowledge_v6/' + knId).update({ title: values.title || currentT, content: values.content || currentC });
+      var updateData = { title: values.title || currentT, content: values.content || currentC };
+      if (values.photos !== undefined) updateData.photos = values.photos;
+      db.ref('knowledge_v6/' + knId).update(updateData);
     }
   });
 }
@@ -2958,5 +3044,12 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 </script>
+
+<!-- Lightbox -->
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox(event)">✕</button>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
 </body>
 </html>
